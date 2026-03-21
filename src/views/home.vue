@@ -24,22 +24,26 @@
     <section class="home__cards">                                                  <!-- seção com os 4 cards de números -->
 
       <div class="cards-row">
-        <div class="card_controle">                                                           <!-- card: total de EPIs -->
-          <img src="../assets/card_1.png" alt="icone de EPI" class="card__icone">                                       <!-- ícone do card -->
+        <div class="card_controle">                                                               
+           <div>  
+            <span class="card_icone">
+                 <img src="../assets/card_1.png" alt="icone de EPI";>
+            </span>                                       
+           </div>
          <h2>Controle de Estoque</h2>
          <p>Acompanhe em tempo real a quantidade de EPIs disponíveis e mantenha o estoque sempre organizado.
            </p>
         </div>                                                                       
 
         <div class="card_registro">                 
-          <span class="card__icone"></span>                                       
+          <span class="card_icone"></span>                                       
           <h2>Registro de Entregas</h2>    
           <p>Registre e acompanhe a entrega de equipamento de proteção individual para cada colaborador</p>
           </div>
         
         
            <div class="card_gestao">                 
-          <span class="card__icone"></span>                                       
+          <span class="card_icone"></span>                                       
           <h2>Gestão de Usuários</h2>    
           <p>Cadastre colaboradores e gerencie permisões de acessoao sistema de gestão de EPIs
            </p>  
@@ -86,7 +90,8 @@ import Header from '../components/header.vue';
   font-weight: semi-bold;
   text-align: left;
   color: #0e2238;
-  margin-left: 163px;
+  margin-left: 11rem;
+  margin-top: 10rem;
 }
 
 .home_texto-titulo p {
@@ -104,7 +109,7 @@ import Header from '../components/header.vue';
 }
 
 .landing_page-imagem img {
-  width: 39rem;
+  width: 45rem;
   max-width: 100rem;
   height: auto;
   border-radius: 10px;
@@ -147,8 +152,9 @@ import Header from '../components/header.vue';
   background: #ffff;                                                             
   border: 1px solid #E2E8F0;                                                      
   border-radius: 12px;    
-  width: 10rem;
-  height: 15rem;    
+  width: 12rem;
+  height: 16rem;
+  position: relative;    
                                                          
 }
 
@@ -175,8 +181,8 @@ import Header from '../components/header.vue';
   background: #ffff;                                                             
   border: 1px solid #E2E8F0;                                                      
   border-radius: 12px;    
-  width: 10rem;
-  height: 15rem;                                                           
+  width: 12rem;
+  height: 16rem;                                                           
 }
 
 .card_registro h2 {
@@ -202,8 +208,8 @@ import Header from '../components/header.vue';
   background: #ffff;                                                             
   border: 1px solid #E2E8F0;                                                      
   border-radius: 12px;    
-  width: 10rem;
-  height: 15rem;                                                           
+  width: 12rem;
+  height: 16rem;                                                           
 }
 
 .card_gestao h2 {
@@ -229,8 +235,8 @@ import Header from '../components/header.vue';
   background: #ffff;                                                             
   border: 1px solid #E2E8F0;                                                      
   border-radius: 12px;    
-  height: 15rem;
-  width: 10rem;                                             
+  height: 16rem;
+  width: 12rem;                                             
 }
 
 .card_relatorios h2 {
@@ -256,8 +262,8 @@ import Header from '../components/header.vue';
   background: #ffff;                                                             
   border: 1px solid #E2E8F0;                                                      
   border-radius: 12px;    
-  height: 15rem;
-  width: 10rem;                                             
+  height: 16rem;
+  width: 12rem;                                             
 }
 
 .card_rastreabilidade h2 {
@@ -285,6 +291,21 @@ import Header from '../components/header.vue';
   padding: 1.5rem;                                                                 
   border-radius: 12px;    
   gap: 10rem;  
+}
+
+.card_icone {
+  display: flex;
+  flex-direction: column;
+  width: 50px;
+  height: 50px;
+  background-color: #0e2238;
+  border: 1px solid #E2E8F0;   
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-50deg);
 }
 
 </style>                                                                            
