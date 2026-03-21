@@ -23,81 +23,54 @@
     <!-- ========== CARDS DE RESUMO ========== -->
     <section class="home__cards">                                                  <!-- seção com os 4 cards de números -->
 
-      <div class="card_1">                                                           <!-- card: total de EPIs -->
-        <img src="../assets/card_1.png" alt="icone de EPI" class="card__icone">                                       <!-- ícone do card -->
-       <h2>Gerencie Entregas</h2>
-       <p>Organize e acompanhe <br> a entrega de EPI’s com <br> praticidade e total <br>controle. 
-      </p>
-      </div>                                                                       <!-- fecha o card -->
+      <div class="cards-row">
+        <div class="card_controle">                                                           <!-- card: total de EPIs -->
+          <img src="../assets/card_1.png" alt="icone de EPI" class="card__icone">                                       <!-- ícone do card -->
+         <h2>Controle de Estoque</h2>
+         <p>Acompanhe em tempo real a quantidade de EPIs disponíveis e mantenha o estoque sempre organizado.
+           </p>
+        </div>                                                                       
 
-      <div class="card">                                                           <!-- card: colaboradores -->
-        <span class="card__icone">👷</span>                                       <!-- ícone do card -->
-        <span class="card__numero">48</span>                                      <!-- número em destaque -->
-        <span class="card__label">Colaboradores</span>                            <!-- legenda do número -->
-      </div>                                                                       <!-- fecha o card -->
-
-      <div class="card">                                                           <!-- card: entregas realizadas -->
-        <span class="card__icone">📦</span>                                       <!-- ícone do card -->
-        <span class="card__numero">89</span>                                      <!-- número em destaque -->
-        <span class="card__label">Entregas realizadas</span>                      <!-- legenda do número -->
-      </div>                                                                       <!-- fecha o card -->
-
-      <div class="card card--alerta">                                             <!-- card: EPIs vencendo (com destaque laranja) -->
-        <span class="card__icone">⚠️</span>                                       <!-- ícone de alerta -->
-        <span class="card__numero">7</span>                                       <!-- número em destaque -->
-        <span class="card__label">EPIs vencendo</span>                            <!-- legenda do número -->
-      </div>                                                                       <!-- fecha o card de alerta -->
-
-    </section>                                                                     <!-- fecha a seção de cards -->
-
-    <!-- ========== COMO USAR ========== -->
-    <section class="home__instrucoes">                                            <!-- seção com os 4 passos de uso -->
-
-      <h2 class="home__instrucoes-titulo">Como usar o sistema</h2>               <!-- título da seção -->
-
-      <div class="home__passos">                                                  <!-- grade com os 4 passos -->
-
-        <div class="passo">                                                        <!-- passo 1 -->
-          <span class="passo__numero">1</span>                                    <!-- círculo com o número -->
-          <h3>Cadastre os colaboradores</h3>                                      <!-- título do passo -->
-          <p>Acesse o menu Colaboradores e registre cada funcionário com seus dados.</p> <!-- descrição -->
-        </div>                                                                     <!-- fecha o passo 1 -->
-
-        <div class="passo">                                                        <!-- passo 2 -->
-          <span class="passo__numero">2</span>                                    <!-- círculo com o número -->
-          <h3>Cadastre os EPIs</h3>                                               <!-- título do passo -->
-          <p>Vá em Equipamentos e adicione os EPIs disponíveis com validade e quantidade.</p> <!-- descrição -->
-        </div>                                                                     <!-- fecha o passo 2 -->
-
-        <div class="passo">                                                        <!-- passo 3 -->
-          <span class="passo__numero">3</span>                                    <!-- círculo com o número -->
-          <h3>Registre as entregas</h3>                                           <!-- título do passo -->
-          <p>Em Entregas, vincule o EPI ao colaborador e registre a data de entrega.</p> <!-- descrição -->
-        </div>                                                                     <!-- fecha o passo 3 -->
-
-        <div class="passo">                                                        <!-- passo 4 -->
-          <span class="passo__numero">4</span>                                    <!-- círculo com o número -->
-          <h3>Acompanhe os relatórios</h3>                                        <!-- título do passo -->
-          <p>Monitore validades e histórico de entregas pelo menu Relatórios.</p> <!-- descrição -->
-        </div>                                                                     <!-- fecha o passo 4 -->
-
-      </div>                                                                       <!-- fecha a grade de passos -->
-
-    </section>                                                                     <!-- fecha a seção de instruções -->
-
-  </div>                                                                           <!-- fecha a div principal -->
+        <div class="card_registro">                 
+          <span class="card__icone"></span>                                       
+          <h2>Registro de Entregas</h2>    
+          <p>Registre e acompanhe a entrega de equipamento de proteção individual para cada colaborador</p>
+          </div>
+        
+        
+           <div class="card_gestao">                 
+          <span class="card__icone"></span>                                       
+          <h2>Gestão de Usuários</h2>    
+          <p>Cadastre colaboradores e gerencie permisões de acessoao sistema de gestão de EPIs
+           </p>  
+        </div>
+      </div>
+      <div class="card-segundo">      
+        <div class="card_relatorios">                 
+          <span class="card__icone"></span>                                       
+          <h2>Relatórios</h2>    
+          <p>Visualize relatórios e dados importantes para acompanhar o uso e controles dos EPIs
+           </p>
+           </div>
+           <div class="card_rastreabilidade">
+          <span class="card__icone"></span>                                       
+          <h2>Rastreabilidade</h2>    
+          <p>Visualize relatórios e dados importantes para acompanhar o uso e controles dos EPIs
+           </p>
+           </div>
+           </div>                                                               
+    </section>
+  </div>                                                                           
 
 </template>                                                                        <!-- fecha o template -->
 <script setup>
 import Header from '../components/header.vue';
 </script>
 
-<style scoped>                
+<style scoped>  
 
-.home {
-  max-width: 1400px;                                                               /* largura máxima da página */
-  margin: 0 auto;                                                                  /* centraliza na tela */
-  padding: 5rem;                                                                   /* espaço interno */
+
+.home {                                                                 
   background: #E8E8EE;                                                             /* fundo cinza claro */
 }
 .home__hero {
@@ -126,10 +99,12 @@ import Header from '../components/header.vue';
   display: flex;
   justify-content: right;
   align-items: center;
+  margin-right: 3rem;
+  margin-top: 1rem;
 }
 
 .landing_page-imagem img {
-  width: 30rem;
+  width: 39rem;
   max-width: 100rem;
   height: auto;
   border-radius: 10px;
@@ -151,106 +126,165 @@ import Header from '../components/header.vue';
 
 /* estilo do <section class="home__cards"> */
 .home__cards {
-  display: grid;                                                                   /* organiza os cards em grade */
-  grid-template-columns: repeat(4, 1fr);                                           /* cria 4 colunas de tamanho igual */
-  gap: 1.5rem;                                                                     /* espaço entre os cards */
-  margin-bottom: 3rem;                                                             /* espaço abaixo da seção */
+  display: flex;                                                                  
+  flex-direction: column;
+  align-items: center;
+  gap: 5rem;                                                                    
+}
+
+.cards-row {
+  display: flex;
+  flex-direction: row;
+  gap: 5rem;
 }
 
 /* estilo do <div class="card"> */
-.card {
-  display: flex;                                                                   /* empilha os filhos */
-  flex-direction: column;                                                          /* ícone, número e label um abaixo do outro */
-  align-items: center;                                                             /* centraliza horizontalmente */
-  padding: 1.5rem;                                                                 /* espaço interno do card */
-  background: #ffffff;                                                             /* fundo branco */
-  border: 1px solid #E2E8F0;                                                       /* borda cinza clara */
-  border-radius: 12px;                                                             /* cantos arredondados */
+.card_controle {
+  display: flex;                                                                   
+  flex-direction: column;                                                          
+  align-items: center;                                                            
+  padding: 1.5rem;                                                                 
+  background: #ffff;                                                             
+  border: 1px solid #E2E8F0;                                                      
+  border-radius: 12px;    
+  width: 10rem;
+  height: 15rem;    
+                                                         
 }
 
-/* estilo do <div class="card card--alerta"> */
-.card--alerta {
-  border-color: #F97316;                                                           /* troca a borda para laranja */
-  background: #FFF7ED;                                                             /* fundo laranja bem claro */
+.card_controle h2 {
+  font-size: 20px;
+  font-family: poppins;
+  font-weight: semi-bold;
+  text-align: center;
+  color: #0e2238;
+  margin-bottom: 1rem;
 }
 
-/* estilo do <span class="card__icone"> */
-.card__icone {
-  font-size: 32px;                                                                 /* tamanho do emoji/ícone */
-  margin-bottom: 8px;                                                              /* espaço abaixo do ícone */
+.card_controle p {
+  font-size: 1.0rem;
+  text-align: center;
+  color: #0e2238 ;
+}
+                                                     
+.card_registro {
+  display: flex;                                                                   
+  flex-direction: column;                                                          
+  align-items: center;                                                            
+  padding: 1.5rem;                                                                 
+  background: #ffff;                                                             
+  border: 1px solid #E2E8F0;                                                      
+  border-radius: 12px;    
+  width: 10rem;
+  height: 15rem;                                                           
 }
 
-/* estilo do <span class="card__numero"> */
-.card__numero {
-  font-size: 28px;                                                                 /* número grande em destaque */
-  font-weight: 700;                                                                /* número em negrito */
-  color: #1E3A5F;                                                                  /* azul escuro */
+.card_registro h2 {
+  font-size: 20px;
+  font-family: poppins;
+  font-weight: semi-bold;
+  text-align: center;
+  color: #0e2238;
+  margin-bottom: 1rem;
 }
 
-/* estilo do <span class="card__label"> */
-.card__label {
-  font-size: 13px;                                                                 /* texto pequeno */
-  color: #555;                                                                     /* cinza médio */
-  margin-top: 4px;                                                                 /* espaço acima do texto */
+.card_registro p {
+  font-size: 1.0rem;
+  text-align: center;
+  color: #0e2238 ;
 }
 
-/* estilo do <section class="home__instrucoes"> */
-.home__instrucoes {
-  margin-bottom: 3rem;                                                             /* espaço abaixo da seção */
+.card_gestao {
+  display: flex;                                                                   
+  flex-direction: column;                                                          
+  align-items: center;                                                            
+  padding: 1.5rem;                                                                 
+  background: #ffff;                                                             
+  border: 1px solid #E2E8F0;                                                      
+  border-radius: 12px;    
+  width: 10rem;
+  height: 15rem;                                                           
 }
 
-/* estilo do <h2 class="home__instrucoes-titulo"> */
-.home__instrucoes-titulo {
-  font-size: 22px;                                                                 /* tamanho do título da seção */
-  color: #1E3A5F;                                                                  /* azul escuro */
-  margin-bottom: 1.5rem;                                                           /* espaço abaixo do título */
-  text-align: center;                                                              /* centraliza o texto */
+.card_gestao h2 {
+  font-size: 20px;
+  font-family: poppins;
+  font-weight: semi-bold;
+  text-align: center;
+  color: #0e2238;
+  margin-bottom: 1rem;
 }
 
-/* estilo do <div class="home__passos"> */
-.home__passos {
-  display: grid;                                                                   /* organiza os passos em grade */
-  grid-template-columns: repeat(4, 1fr);                                           /* 4 colunas de tamanho igual */
-  gap: 1.5rem;                                                                     /* espaço entre os passos */
+.card_gestao p {
+  font-size: 1.0rem;
+  text-align: center;
+  color: #0e2238 ;
 }
 
-/* estilo do <div class="passo"> */
-.passo {
-  padding: 1.5rem;                                                                 /* espaço interno */
-  background: #F8FAFC;                                                             /* fundo cinza claro */
-  border-radius: 12px;                                                             /* cantos arredondados */
-  border-left: 4px solid #F97316;                                                  /* barra laranja à esquerda */
-  border-radius: 0 12px 12px 0;                                                    /* arredonda só os cantos da direita */
+.card_relatorios {
+  display: flex;                                                                   
+  flex-direction: column;                                                          
+  align-items: center;                                                            
+  padding: 1.5rem;                                                                 
+  background: #ffff;                                                             
+  border: 1px solid #E2E8F0;                                                      
+  border-radius: 12px;    
+  height: 15rem;
+  width: 10rem;                                             
 }
 
-/* estilo do <span class="passo__numero"> */
-.passo__numero {
-  display: inline-block;                                                           /* permite definir largura e altura */
-  width: 28px;                                                                     /* largura do círculo */
-  height: 28px;                                                                    /* altura do círculo */
-  border-radius: 50%;                                                              /* transforma em círculo */
-  background: #F97316;                                                             /* fundo laranja */
-  color: #fff;                                                                     /* número branco */
-  text-align: center;                                                              /* centraliza o número */
-  line-height: 28px;                                                               /* alinha o número verticalmente */
-  font-weight: 700;                                                                /* número em negrito */
-  font-size: 14px;                                                                 /* tamanho do número */
-  margin-bottom: 10px;                                                             /* espaço abaixo do círculo */
+.card_relatorios h2 {
+  font-size: 20px;
+  font-family: poppins;
+  font-weight: semi-bold;
+  text-align: center;
+  color: #0e2238;
+  margin-bottom: 1rem;
 }
 
-/* estilo do <h3> dentro de .passo */
-.passo h3 {
-  font-size: 15px;                                                                 /* tamanho do título do passo */
-  color: #1E3A5F;                                                                  /* azul escuro */
-  margin: 0 0 6px;                                                                 /* espaço abaixo do título */
+.card_relatorios p {
+  font-size: 1.0rem;
+  text-align: center;
+  color: #0e2238 ;
 }
 
-/* estilo do <p> dentro de .passo */
-.passo p {
-  font-size: 13px;                                                                 /* tamanho do texto */
-  color: #555;                                                                     /* cinza médio */
-  line-height: 1.6;                                                                /* espaço entre as linhas */
-  margin: 0;                                                                       /* remove margem padrão */
+.card_rastreabilidade {
+  display: flex;                                                                   
+  flex-direction: column;                                                          
+  align-items: center;                                                            
+  padding: 1.5rem;                                                                 
+  background: #ffff;                                                             
+  border: 1px solid #E2E8F0;                                                      
+  border-radius: 12px;    
+  height: 15rem;
+  width: 10rem;                                             
 }
 
-</style>                                                                           /* fecha o bloco de estilo */
+.card_rastreabilidade h2 {
+  font-size: 20px;
+  font-family: poppins;
+  font-weight: semi-bold;
+  text-align: center;
+  color: #0e2238;
+  margin-bottom: 1rem;
+}
+
+.card_rastreabilidade p {
+  font-size: 1.0rem;
+  text-align: center;
+  color: #0e2238 ;
+}
+
+
+.card-segundo {
+  display: flex;                                                                   
+  flex-direction: row;  
+  border-right: 10rem;                                                        
+  align-items: center;                                                            
+  justify-content: center;
+  padding: 1.5rem;                                                                 
+  border-radius: 12px;    
+  gap: 10rem;  
+}
+
+</style>                                                                            
