@@ -79,11 +79,11 @@
 
 .footer__content {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: flex-start;
   flex-wrap: wrap;
-  gap: 3.5rem;
-  margin-bottom: 2rem;
+  gap: 9rem;
+  margin-bottom: 0.5rem;
 }
 
 .footer__brand {
@@ -101,7 +101,7 @@
   width: 50px;
   height: 25px;
   object-fit: contain;
-  transform: rotate(-12deg) translate(-24px, 3px);
+  transform: rotate(-12deg) translate(-19px, -27px);
 }
 
 .footer_logo-text {
@@ -110,7 +110,7 @@
   font-weight: semi-bold;
   color: #0e2238;
   position: relative;
-  top: 22px;
+  top: -9px;
   left: -57px;
 }
 
@@ -126,7 +126,7 @@
   font-weight: semi-bold;
   color: #0e2238;
    position: relative;
-  top: 9px;
+  top: -23px;
   left: 1px;
 }
 
@@ -146,11 +146,10 @@
 }
 
 .footer__colunas a {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-family: poppins, sans-serif;
+  font-weight: semi-bold    ;
   color: #0e2238;
-  text-decoration: none;
-  transition: 0.2s ease;
 }
 
 .footer__colunas a:hover {
@@ -177,10 +176,10 @@
   padding-top: 1rem;
 }
 
-.footer__copy p {
+.footer_copy p {
   margin: 0;
   color: #0e2238;
-  font-size: 0.8rem;
+  font-size: 0.6rem;
   font-family: poppins, sans-serif;
 }
 </style>

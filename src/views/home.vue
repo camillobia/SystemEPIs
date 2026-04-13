@@ -174,7 +174,8 @@ import Footer from '../components/footer.vue';
   display: flex;                                                                  
   flex-direction: column;
   align-items: center;
-  gap: 5rem;                                                                    
+  gap: 5rem;      
+  padding-bottom: 9rem;                                                              
 }
 
 .cards-row {
@@ -393,7 +394,7 @@ import Footer from '../components/footer.vue';
    border: 1px solid #E2E8F0;   
    border-radius: 0.3rem; 
 }
-  
+
 .card_relatorios .card_icone2 img {
   width: 24px;
   height: 24px;
