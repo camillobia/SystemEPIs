@@ -1,5 +1,10 @@
 <template>
-  <div class="login-page">
+    <div class="login-page">
+        <h1>System<span class="EPI">EPI</span>
+    </h1>
+    <div class="logo-icon">
+    <img src="../assets/logo_icone.png" alt="Logo da Empresa" />
+    </div>
     <!-- Área da ilustração -->
     <div class="illustration">
       <img src="../assets/foto_login.png" alt="foto da tela de login" />
@@ -7,7 +12,8 @@
 
     <div class="login-container">
       <form @submit.prevent="handleLogin">
-        <h2>System EPI</h2>
+        <h2>LOGIN</h2>
+        <p>Faça login para continuar</p>
 
         <label for="Email_usuario">E-mail</label>
         <input
@@ -25,7 +31,11 @@
           type="password"
           placeholder="Digite sua senha"
           required
+          
         />
+        <div class="esqueci">
+            <h2>Esqueci minha senha</h2>
+        </div>
 
         <button :disabled="loading" type="submit">
           {{ loading ? 'Carregando...' : 'Entrar' }}
@@ -84,12 +94,43 @@ const handleLogin = async () => {
 .login-page {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  
   height: 100vh;
   background-color: #e8e8ee;
   font-family: 'Inter', sans-serif;
   padding: 0 5%;
 }
+
+.login-page h1 {
+  position: absolute;
+  top: 29px;
+  left: 6rem;
+  transform: translateX(-50%);
+  color: #0E2238;
+  font-size: 1.8rem;
+  font-weight: bold;
+   .EPI {
+    color: #F5B301;
+    margin-left:4px;  
+  }
+}
+
+.logo_icon {
+  position: absolute;
+  top: 30px;
+  left: 10%;
+  transform: translateX(-90%);
+}
+
+.logo-icon img {
+  width: 40px;
+  height: 42px;
+  position: absolute;
+  top: 1px;
+  left: 3px;
+  transform: rotate(-12deg);
+}
+
 
 .illustration {
   flex: 1;
@@ -117,17 +158,22 @@ form {
   width: 100%;
   max-width: 350px;
   padding: 30px;
-  background: #fff;
+  background: #d9d9d9;
   border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
 }
 
 h2 {
   text-align: center;
-  color: #1e2a5e;
+  color: #0E2238;
   margin-bottom: 10px;
 }
-
+p {
+  text-align: center;
+  color: #0E2238; 
+  opacity: 50%  ;  
+  margin-bottom: 20px;
+}
 label {
   font-weight: bold;
   font-size: 0.9rem;
@@ -135,7 +181,7 @@ label {
 }
 
 input {
-  padding: 12px;
+  padding: 15px;
   border-radius: 8px;
   border: 1px solid #ddd;
   outline: none;
@@ -143,7 +189,7 @@ input {
 }
 
 input:focus {
-  border-color: #667eea;
+  border-color: #0e2238;
 }
 
 button {
@@ -183,5 +229,13 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+.esqueci h2 { 
+  text-align: right;
+  margin-top: -9px;
+  color: #0E2238;
+  font-size: 0.7rem;
+  font-weight: bold;
 }
 </style>

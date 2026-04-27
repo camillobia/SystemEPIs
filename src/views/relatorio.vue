@@ -1,62 +1,58 @@
 <template>
-  <div class="page">
+  <header_2 />
+   <div class="page">
     <div class="container">
-      <div class="header">
-        <div>
+     <div class="header">
+        <button 
+          class="hamburger" 
+          :class="{ active: menuOpen }"
+          @click="toggleMenu"
+        >
+          <span></span>
+           <span></span>
+            <span></span> 
+              </button>
+
+        <div class="header-title">
           <h1 class="title">Relatórios de EPIs</h1>
           <p class="subtitle">
             Gestão e controle de Equipamentos de Proteção Individual
           </p>
-        </div>
-
-        <div class="actions">
-          <select v-model="dateFilter" class="select">
-            <option value="7">Últimos 7 dias</option>
-            <option value="30">Últimos 30 dias</option>
-            <option value="90">Últimos 90 dias</option>
-            <option value="365">Último ano</option>
-          </select>
-
-          <button class="btn btn-outline">Filtros</button>
-          <button class="btn btn-primary">Exportar</button>
-        </div>
-      </div>
+           </div>
+            </div>
 
       <div class="cards">
         <div class="card">
           <div class="card-top">
             <span class="card-title">EPIs Vencidos</span>
             <span class="icon-box danger">⚠</span>
-          </div>
-          <div class="card-value danger-text">14</div>
-          <div class="card-change danger-text">↓ -12.5% vs mês anterior</div>
-        </div>
+             </div>
+               <div class="card-value danger-text">14</div>
+                </div>
 
         <div class="card">
           <div class="card-top">
             <span class="card-title">Próximos ao Vencimento</span>
             <span class="icon-box warning">◔</span>
-          </div>
-          <div class="card-value warning-text">40</div>
-          <div class="card-change success-text">↑ +5.2% vs mês anterior</div>
-        </div>
+             </div>
+              <div class="card-value warning-text">40</div>
+               </div>
 
         <div class="card">
           <div class="card-top">
             <span class="card-title">Estoque Total</span>
             <span class="icon-box primary">◫</span>
-          </div>
-          <div class="card-value primary-text">1.050</div>
-        </div>
+             </div>
+              <div class="card-value primary-text">1.050</div>
+               </div>
 
         <div class="card">
           <div class="card-top">
             <span class="card-title">Em Promoção</span>
             <span class="icon-box success">🏷</span>
-          </div>
-          <div class="card-value success-text">425</div>
-          <div class="card-change success-text">↑ +15.8% vs mês anterior</div>
-        </div>
+             </div>
+              <div class="card-value success-text">425</div>
+              </div>
 
         <div class="card">
           <div class="card-top">
@@ -64,8 +60,19 @@
             <span class="icon-box neutral">🗑</span>
           </div>
           <div class="card-value neutral-text">152</div>
-          <div class="card-change danger-text">↓ -8.3% vs mês anterior</div>
         </div>
+      </div>
+
+      <div class="actions">
+        <select v-model="dateFilter" class="select">
+          <option value="7">Últimos 7 dias</option>
+          <option value="30">Últimos 30 dias</option>
+          <option value="90">Últimos 90 dias</option>
+          <option value="365">Último ano</option>
+        </select>
+
+        <button class="btn btn-outline">Filtros</button>
+        <button class="btn btn-primary">Exportar</button>
       </div>
 
       <div class="table-box">
@@ -83,6 +90,7 @@
               <th>Quantidade</th>
             </tr>
           </thead>
+
           <tbody>
             <tr v-for="item in inventoryList" :key="item.id">
               <td>{{ item.nome }}</td>
@@ -93,12 +101,14 @@
           </tbody>
         </table>
       </div>
+
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import header_2 from '../components/header_2.vue'
 
 const dateFilter = ref('30')
 
@@ -137,226 +147,178 @@ const inventoryList = [
 
 .page {
   min-height: 100vh;
-  background: #f3f4f6;
-  padding: 40px 24px;
+  background: #e8e8ee;
+  padding: 20px 16px;
 }
 
 .container {
-  max-width: 1400px;
+  max-width: 1350px;
   margin: 0 auto;
 }
 
 .header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 24px;
-  margin-bottom: 32px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.header-title {
+  text-align: center;
+  width: 100%;
 }
 
 .title {
-  font-size: 42px;
+  font-size: 2.6rem;
   font-weight: 700;
-  color: #17145c;
-  margin: 0 0 10px;
+  color: #0e2238;
+  margin: 0;
 }
 
 .subtitle {
-  margin: 0;
-  font-size: 22px;
-  color: #5c667a;
-}
-
-.actions {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.select {
-  height: 52px;
-  padding: 0 18px;
-  border: 1px solid #d9dee7;
-  border-radius: 14px;
-  background: #fff;
-  font-size: 18px;
-  color: #17145c;
-  outline: none;
-}
-
-.btn {
-  height: 52px;
-  padding: 0 22px;
-  border-radius: 14px;
-  font-size: 18px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s ease;
-  border: none;
-}
-
-.btn-outline {
-  background: #fff;
-  color: #17145c;
-  border: 1px solid #d9dee7;
-}
-
-.btn-outline:hover {
-  border-color: #17145c;
-}
-
-.btn-primary {
-  background: #17145c;
-  color: #fff;
-}
-
-.btn-primary:hover {
-  background: #231d7a;
+  font-size: 1.25rem;
+  color: #0e2238;
+  opacity: 0.75;
+  margin-top: 8px;
 }
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 22px;
-  margin-bottom: 34px;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+  margin: 18px 0 22px 0;
 }
 
 .card {
   background: #fff;
   border: 1px solid #dde3eb;
-  border-radius: 22px;
-  padding: 24px;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
 }
 
 .card-top {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 26px;
+  margin-bottom: 10px;
 }
 
 .card-title {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 600;
-  color: #334155;
-  line-height: 1.4;
+  color: #0e2238;
 }
 
 .icon-box {
-  width: 46px;
-  height: 46px;
-  border-radius: 14px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
-}
-
-.danger {
-  background: #fdeaea;
-  color: #ef4444;
-}
-
-.warning {
-  background: #fff6db;
-  color: #f4b400;
-}
-
-.primary {
-  background: #ececf2;
-  color: #17145c;
-}
-
-.success {
-  background: #e7f8f1;
-  color: #10b981;
-}
-
-.neutral {
-  background: #eeeeef;
-  color: #6b7280;
+  font-size: 18px;
 }
 
 .card-value {
-  font-size: 50px;
+  font-size: 36px;
+  font-weight: 600;
   line-height: 1;
-  font-weight: 500;
-  margin-bottom: 12px;
 }
 
-.card-change {
-  font-size: 16px;
+.danger { background: #fdeaea; color: #ef4444; }
+.warning { background: #fff6db; color: #f4b400; }
+.primary { background: #ececf2; color: #0e2238; }
+.success { background: #e7f8f1; color: #10b981; }
+.neutral { background: #eeeeef; color: #6b7280; }
+
+.primary-text { color: #0e2238; }
+.success-text { color: #10b981; }
+.warning-text { color: #f4b400; }
+.danger-text { color: #ef4444; }
+.neutral-text { color: #6b7280; }
+
+.actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin: 10px 0 26px 0;
 }
 
-.primary-text {
-  color: #17145c;
+.select {
+  height: 42px;
+  width: 12rem;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid #d9dee7;
+  background: #fff;
+  font-size: 15px;
+  color: #0e2238;
 }
 
-.success-text {
-  color: #10b981;
+.btn {
+  height: 42px;
+  padding: 0 16px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
 }
 
-.warning-text {
-  color: #f4b400;
+.btn-outline {
+  background: #fff;
+  border: 1px solid #d9dee7;
+  color: #0e2238;
 }
 
-.danger-text {
-  color: #ef4444;
-}
-
-.neutral-text {
-  color: #6b7280;
+.btn-primary {
+  background: #0e2238;
+  color: #fff;
 }
 
 .table-box {
   background: #fff;
   border: 1px solid #dde3eb;
-  border-radius: 24px;
-  padding: 28px;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+  border-radius: 18px;
+  padding: 22px;
+  margin-top: 10px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
 }
 
 .table-header h2 {
-  margin: 0 0 8px;
-  color: #17145c;
-  font-size: 34px;
+  margin: 0;
+  font-size: 24px;
+  color: #0e2238;
 }
 
 .table-header p {
-  margin: 0 0 24px;
+  margin: 6px 0 18px;
+  font-size: 15px;
   color: #5c667a;
-  font-size: 20px;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  overflow: hidden;
-}
-
-.table thead tr {
-  background: #f3f5f7;
 }
 
 .table th,
 .table td {
-  padding: 20px;
+  padding: 14px;
+  font-size: 15px;
   text-align: left;
 }
 
 .table th {
-  color: #17145c;
-  font-size: 20px;
-  font-weight: 700;
+  font-weight: 600;
+  color: #0e2238;
 }
 
 .table td {
-  font-size: 18px;
-  color: #1f2937;
   border-bottom: 1px solid #e8edf3;
+  color: #1f2937;
 }
 
 .table tbody tr:hover {
@@ -371,11 +333,11 @@ const inventoryList = [
 
 @media (max-width: 700px) {
   .title {
-    font-size: 30px;
+    font-size: 2rem;
   }
 
   .subtitle {
-    font-size: 18px;
+    font-size: 1rem;
   }
 
   .cards {
@@ -387,7 +349,7 @@ const inventoryList = [
   }
 
   .table {
-    min-width: 700px;
+    min-width: 650px;
   }
 }
 </style>

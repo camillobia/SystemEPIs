@@ -73,7 +73,7 @@
 
 <style scoped>
 .footer {
-  background: #e8e8ee;
+  background:#eef2f7;
   padding: 3rem 4rem 1rem;
 }
 
@@ -115,7 +115,7 @@
 }
 
 .footer_logo-text .EPI {
-  color: #f5b301;
+  color: #0e2238;
   margin-left: 3px;
 }
 

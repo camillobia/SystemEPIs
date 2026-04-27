@@ -36,20 +36,20 @@
 .right-group {
   display: flex;
   align-items: center;
-  gap: 58px;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 30px;
+  gap: 40px;
 }
 .header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 3;
   display: flex;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center  ;
-  padding: 20px 40px;
-  background-color: #e8e8ee;
+  align-items: center;
   justify-content: space-between;
+  padding: 20px 40px;
 }
+
 
 .logo-container {
   display: flex;
@@ -83,9 +83,10 @@
   font-family: Poppins, sans-serif;
   font-weight: semi-bold;
    margin: 0;
-  color:#0E2238;
+  color: #0e2238;
   .EPI {
-    color: #F5B301;
+  color: #0e2238;
+
     margin-left:4px;  
   }
 }
@@ -95,32 +96,34 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  
 }
 
 .user-icon {
-  background-color: #0E2238;
-  width: 92px;
-  height: 40px;
-  border-radius: 8px;
+  background-color:#f5b301;
+  width: 100px;
+  height: 43px;
+  border-radius: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 13px;
-  cursor: pointer;
+  font-size: 14px;
+  font-family: 'inter', sans-serif;
+  font-weight: 300;
   text-decoration: none;
   color: white;
-  font-family: poppins, sans-serif;
 
-}
+ }
 
 .Contato {
   display: flex;
   align-items: center;
   gap: 20px;
   margin-left: 0;
-  font-family: poppins, sans-serif;
-  font-size: 10px;
-  color: #0E2238;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 9px;
+  color: #ffffff;
 }
 
 .Sobre {
@@ -128,9 +131,10 @@
   align-items: center;
   gap: 20px;
   margin-left: 0;
-  font-family: poppins, sans-serif;
-  font-size: 10px;
-  color: #0E2238;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 9px;
+  color: #ffffff;
 }
 
 .Funcionalidades {
@@ -138,9 +142,10 @@
   align-items: center;
   gap: 20px;
   margin-left: 0;
-  font-family: poppins, sans-serif;
-  font-size: 10px;
-  color: #0E2238;
+  font-family:'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 9px;
+  color: #ffffff;
 }
 
 </style>
