@@ -1,9 +1,8 @@
 <template>
   <div>
-<!-- HEADER -->
     <header class="header">
 
-      <!-- HAMBURGER -->
+
       <button 
         class="hamburger" 
         :class="{ active: menuOpen }"
@@ -17,46 +16,75 @@
      
     </header>
 
-    <!-- SIDEBAR -->
     <aside class="sidebar" :class="{ open: menuOpen }">
-      <p>Dashboard</p>
-      <p>Relatórios</p>
-      <p>Configurações</p>
+      <p @click="goTologin">Login</p>
+      <p @click="goToRelatorio">Relatórios</p>
+      <p @click="goTocadastroFuncionario">Funcionários</p>
+      <p @click="goTocadastroEPI">Cadastro de EPIs</p>
     </aside>
+
+    <div v-if="menuOpen" class="overlay" @click="closeMenu"></div>
 
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const menuOpen = ref(false)
 
 function toggleMenu() {
   menuOpen.value = !menuOpen.value
 }
+
+function closeMenu() {
+  menuOpen.value = false
+}
+
+const goTologin = () => {
+  
+  router.push('/login')
+}
+
+function goToRelatorio() {
+  closeMenu()
+  router.push('/relatorio')
+}
+
+function goTocadastroFuncionario() {
+  closeMenu()
+  router.push('/cadastro')
+}
+
+function goTocadastroEPI() {
+  closeMenu()
+  router.push('/cadastro-epi')
+}
+
 </script>
 
 <style scoped>
 
-/* RESET */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'inter', sans-serif;
+   font-size: 23px;
+  font-weight: 300;
 }
 
-/* HEADER */
 .header {
   display: flex;
   align-items: center;
   gap: 20px;
-  background: #e8e8ee;
+  background: #0e2238;
   padding: 0 20px;
-  height: 70px;
+  height: 75px;
 }
 
-/* LOGO */
 .logo-container {
   display: flex;
   align-items: center;
@@ -72,7 +100,6 @@ function toggleMenu() {
   font-size: 18px;
 }
 
-/* HAMBURGER */
 .hamburger {
   width: 30px;
   height: 22px;
@@ -87,12 +114,11 @@ function toggleMenu() {
 .hamburger span {
   height: 3px;
   width: 100%;
-  background: #0e2238;
+  background: #ffffff;
   border-radius: 2px;
   transition: 0.3s;
 }
 
-/* ANIMAÇÃO */
 .hamburger.active span:nth-child(1) {
   transform: rotate(45deg) translate(5px, 5px);
 }
@@ -105,7 +131,6 @@ function toggleMenu() {
   transform: rotate(-45deg) translate(6px, -6px);
 }
 
-/* SIDEBAR */
 .sidebar {
   position: fixed;
   top: 0;
@@ -124,11 +149,21 @@ function toggleMenu() {
 }
 
 .sidebar p {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   cursor: pointer;
 }
 
-/* RESPONSIVO */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 999;
+}
+
+
 @media (max-width: 600px) {
   .logo-text {
     font-size: 14px;

@@ -249,13 +249,14 @@ import Footer from '../components/footer.vue';
 .indicadores_valor {
   font-size: 20px;
   font-weight: 400;
-  font-family: poppins, sans-serif;
+  font-family: 'inter', sans-serif;
   color: #0e2238;
 }
 
 .indicadores_texto {
-  font-size: 15px;
+  font-size: 16px;
   color: #0e2238;
+  font-family: 'inter', sans-serif;
 }
 
 .home_texto2 {
@@ -268,7 +269,7 @@ import Footer from '../components/footer.vue';
 
 .home_texto2 h2 {
   font-size: 2rem;
-  font-family: Poppins, sans-serif;
+  font-family: 'inter', sans-serif;
   color: #0e2238;
   margin-bottom: 0.7rem;
 }

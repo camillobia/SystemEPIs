@@ -1,59 +1,92 @@
 <template>
-    <div class="login-page">
-        <h1>System<span class="EPI">EPI</span>
-    </h1>
-    <div class="logo-icon">
-    <img src="../assets/logo_icone.png" alt="Logo da Empresa" />
-    </div>
-    <!-- Área da ilustração -->
-    <div class="illustration">
-      <img src="../assets/foto_login.png" alt="foto da tela de login" />
-    </div>
+  <div class="page">
+    <div class="card">
+      
 
-    <div class="login-container">
-      <form @submit.prevent="handleLogin">
-        <h2>LOGIN</h2>
-        <p>Faça login para continuar</p>
+      <section class="left">
+        <div class="left-content">
+          <div class="brand">
+            <HardHat class="brand-icon" />
+            <h1>System <span>EPI</span></h1>
+          </div>
 
-        <label for="Email_usuario">E-mail</label>
-        <input
-          id="Email_usuario"
-          v-model="email"
-          type="email"
-          placeholder="seu@email.com"
-          required
-        />
+          <div class="visual">
+            <div class="shield">
+              <Lock class="lock" />
+            </div>
+          </div>
 
-        <label for="Senha-usuario">Senha</label>
-        <input
-          id="Senha-usuario"
-          v-model="password"
-          type="password"
-          placeholder="Digite sua senha"
-          required
-          
-        />
-        <div class="esqueci">
-            <h2>Esqueci minha senha</h2>
+          <p class="left-text">
+            Proteção e segurança para sua equipe.
+            Gerencie seus EPIs de forma inteligente.
+          </p>
         </div>
+      </section>
 
-        <button :disabled="loading" type="submit">
-          {{ loading ? 'Carregando...' : 'Entrar' }}
-        </button>
+      <!-- LADO DIREITO -->
+      <section class="right">
+        <div class="form-box">
+          <h2>Bem-vindo de volta!</h2>
+          <p class="subtitle">Faça login para continuar</p>
 
-        <p v-if="errorMessage" class="error">
-          {{ errorMessage }}
-        </p>
+          <!-- EMAIL -->
+          <div class="group">
+            <label>E-mail</label>
+            <div class="input">
+              <Mail />
+              <input 
+                v-model="email"
+                type="email"
+                placeholder="seu@email.com" 
+              />
+            </div>
+          </div>
 
-        <router-link to="/relatorio">
-          Não tem conta? Cadastre-se
-        </router-link>
-      </form>
+          <!-- SENHA -->
+          <div class="group">
+            <label>Senha</label>
+            <div class="input">
+              <Lock />
+              <input
+                v-model="password"
+                :type="showPassword ? 'text' : 'password'"
+                placeholder="Digite sua senha"
+              />
+              <button type="button" @click="showPassword = !showPassword">
+                <Eye v-if="!showPassword" />
+                <EyeOff v-else />
+              </button>
+            </div>
+            <a class="forgot">Esqueci minha senha</a>
+          </div>
+
+          <button 
+            class="login-btn" 
+            :disabled="loading"
+            @click="handleLogin"
+          >
+            {{ loading ? 'Entrando...' : 'Entrar' }}
+          </button>
+
+          <p v-if="errorMessage" class="error">
+            {{ errorMessage }}
+          </p>
+
+          <div class="divider"><span>ou</span></div>
+
+          <p class="register">
+            Não tem uma conta?
+            <router-link to="/cadastro">Cadastre-se</router-link>
+          </p>
+        </div>
+      </section>
+
     </div>
   </div>
 </template>
-
-<script setup>
+ 
+<script setup lang="ts">
+import { Mail, Lock, Eye, EyeOff, HardHat } from 'lucide-vue-next'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { supabase } from '../composable/useSupabase'
@@ -61,25 +94,26 @@ import { supabase } from '../composable/useSupabase'
 const router = useRouter()
 const email = ref('')
 const password = ref('')
+const showPassword = ref(false)
 const loading = ref(false)
 const errorMessage = ref('')
-
 const handleLogin = async () => {
   errorMessage.value = ''
   loading.value = true
 
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email: email.value,
       password: password.value
     })
 
     if (error) throw error
 
-    console.log('Login realizado com sucesso:', data)
     router.push('/relatorio')
+
   } catch (error) {
-    console.error('Erro ao logar:', error.message)
+    console.error(error.message)
+
     errorMessage.value =
       error.message === 'Invalid login credentials'
         ? 'E-mail ou senha incorretos.'
@@ -88,154 +122,232 @@ const handleLogin = async () => {
     loading.value = false
   }
 }
+ 
 </script>
-
+ 
 <style scoped>
-.login-page {
+.page {
+background: #eef2f7;
+  min-height: 100vh;
   display: flex;
-  justify-content: space-between;
-  
-  height: 100vh;
-  background-color: #e8e8ee;
-  font-family: 'Inter', sans-serif;
-  padding: 0 5%;
-}
-
-.login-page h1 {
-  position: absolute;
-  top: 29px;
-  left: 6rem;
-  transform: translateX(-50%);
-  color: #0E2238;
-  font-size: 1.8rem;
-  font-weight: bold;
-   .EPI {
-    color: #F5B301;
-    margin-left:4px;  
-  }
-}
-
-.logo_icon {
-  position: absolute;
-  top: 30px;
-  left: 10%;
-  transform: translateX(-90%);
-}
-
-.logo-icon img {
-  width: 40px;
-  height: 42px;
-  position: absolute;
-  top: 1px;
-  left: 3px;
-  transform: rotate(-12deg);
-}
-
-
-.illustration {
-  flex: 1;
-  display: flex;
-  justify-content: center;
   align-items: center;
-}
-
-.illustration img {
-  max-width: 90%;
-  height: auto;
-}
-
-.login-container {
-  flex: 1;
-  display: flex;
   justify-content: center;
-  align-items: center;
 }
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+ 
+.card {
   width: 100%;
-  max-width: 350px;
-  padding: 30px;
-  background: #d9d9d9;
-  border-radius: 12px;
-
+  max-width: 1200px;
+  height: 90vh;
+  background: white;
+  display: flex;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0,0,0,.2);
+}
+ 
+.left {
+  width: 50%;
+  background: linear-gradient(135deg, #1c2b44, #284060);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ 
+.square {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  background: #ffc107;
+  border-radius: 6px;
+}
+ 
+.left-content {
+  text-align: center;
+  color: white;
+}
+ 
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 60px;
+}
+.brand-icon {
+  width: 42px;
+  height: 42px;
+  color: #ffc107;
+  margin-top: 4px;
+  
+}
+.brand h1 {
+ font-size: 29px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  margin-left: -5px;
+}
+.brand span {
+  color: #ffffff;
+  margin-left: -5px;
+}
+ 
+.visual {
+  position: relative;
+  margin-bottom: 40px;
+}
+.shield {
+  width: 220px;
+  height: 260px;
+  border: 5px solid #ffc107;
+  border-radius: 120px 120px 30px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 45px;
+}
+.lock {
+  width: 90px;
+  height: 90px;
+  color: #ffc107;
+   transform: translateY(-5px);
+}
+ 
+.float {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #ffc107;
+  border-radius: 4px;
 }
 
+.left-text {
+  font-size: 17px;
+  color: #d1d5db;
+  max-width: 320px;
+  margin: auto;
+  font-weight: 400;
+  font-family: 'Inter', sans-serif;
+}
+ 
+.right {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ 
+.form-box {
+  width: 400px;
+}
+ 
 h2 {
-  text-align: center;
-  color: #0E2238;
-  margin-bottom: 10px;
+ font-size: 30px;
+  font-weight: 400;
+  font-family: 'Inter', sans-serif;
+  color: #0f172a;
+  margin-bottom: 6px;
 }
-p {
-  text-align: center;
-  color: #0E2238; 
-  opacity: 50%  ;  
-  margin-bottom: 20px;
+.subtitle {
+  color: #64748b;
+  margin-bottom: 32px;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: 'Inter', sans-serif;
+}
+ 
+.group {
+  margin-bottom: 24px;
 }
 label {
-  font-weight: bold;
-  font-size: 0.9rem;
-  color: #0e2238;
+  display: block;
+ font-size: 18px;
+  font-weight: 400;
+  font-family: 'Inter', sans-serif;
+  color: #0f172a;
+  margin-bottom: 6px;
 }
-
-input {
-  padding: 15px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  outline: none;
-  transition: border-color 0.3s;
+ 
+.input {
+  position: relative;
 }
-
-input:focus {
-  border-color: #0e2238;
+.input svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
 }
-
-button {
-  padding: 12px;
-  border-radius: 8px;
-  background: #0E2238;
-  color: #fff;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-  transition: opacity 0.3s;
+.input input {
+  width: 100%;
+  height: 52px;
+  padding: 0 44px;
+  border-radius: 12px;
+  border: 1.5px solid #e2e8f0;
+  font-size: 14px;
 }
-
-button:disabled {
-  background: #aab7f1;
-  cursor: not-allowed;
+.input button {
+  position: absolute;
+  right: 45px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
 }
-
-button:hover:not(:disabled) {
-  opacity: 0.9;
+ 
+.forgot {
+  display: block;
+  text-align: right;
+  color: #ffc107;
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: 'Inter', sans-serif;
 }
-
-.error {
-  color: #e74c3c;
-  font-size: 0.85rem;
-  text-align: center;
-  margin-top: 5px;
-}
-
-a {
-  color: #667eea;
-  text-decoration: none;
-  text-align: center;
-  font-size: 0.9rem;
+ 
+.login-btn {
+  width: 100%;
+  height: 52px;
+  background: linear-gradient(180deg, #263b59, #0e2238);
+  color: white;
+  border-radius: 999px;
+ font-size: 18px;
+  font-weight: 400;
+  font-family: 'Inter', sans-serif;
   margin-top: 10px;
 }
-
-a:hover {
-  text-decoration: underline;
+ 
+.divider {
+  margin: 28px 0;
+  text-align: center;
+  position: relative;
 }
-
-.esqueci h2 { 
-  text-align: right;
-  margin-top: -9px;
-  color: #0E2238;
-  font-size: 0.7rem;
-  font-weight: bold;
+.divider::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-top: 1px solid #e2e8f0;
+}
+.divider span {
+  background: white;
+  padding: 0 12px;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: poppins, sans-serif;
+  color: #64748b;
+  position: relative;
+}
+ 
+.register {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: poppins, sans-serif;
+  color: #475569;
+}
+.register a {
+  color: #ffc107;
+  font-weight: 600;
 }
 </style>
