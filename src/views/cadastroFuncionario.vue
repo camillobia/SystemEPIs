@@ -80,22 +80,20 @@
         <input v-model="form.nome" />
           </div>
 
-      <div><label>Setor</label>
-          <input v-model="form.setor" />
+      <div><label>Email</label>
+          <input v-model="form.email" />
             </div>
              </div>
 
      <div class="grid">
+      <div><label>Setor</label>
+          <input v-model="form.setor" />
+            </div>
+
       <div><label>Turno</label>
        <select v-model="form.turno"><option>Manhã</option>
                                      <option>Tarde</option>
                                      <option>Noite</option>
-         </select>
-          </div>
-
-     <div><label>Status</label>
-        <select v-model="form.status"><option>Ativo</option>
-                                      <option>Inativo</option>
          </select>
           </div>
            </div>
@@ -111,15 +109,12 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { supabase } from '../composable/useSupabase'
 import header_2 from '../components/header_2.vue'
 import { UserPlus, RefreshCcw } from 'lucide-vue-next'
 
-const employees = ref([
-  { id: 1, nome: 'João Silva', setor: 'Administração', turno: 'Manhã', status: 'Ativo' },
-  { id: 2, nome: 'Maria Santos', setor: 'Vendas', turno: 'Tarde', status: 'Ativo' },
-  { id: 3, nome: 'Pedro Costa', setor: 'Produção', turno: 'Noite', status: 'Inativo' }
-])
+const employees = ref([])
 
 const searchTerm = ref('')
 const openDialog = ref(false)
@@ -129,9 +124,28 @@ const editId = ref(null)
 
 const form = ref({
   nome: '',
+  email: '',
   setor: '',
   turno: '',
   status: 'Ativo'
+})
+
+onMounted(async () => {
+  const { data, error } = await supabase
+    .from('funcionario')
+    .select('*')
+  if (error) {
+    console.error('Erro ao buscar funcionários', error)
+    return
+  }
+  employees.value = (data || []).map(f => ({
+    id: f.id_funcionario ?? f.Id_funcionario ?? f.id,
+    nome: f.nome_funcionario ?? f.Nome_funcionario ?? f.nome ?? '',
+    email: f.email_funcionario ?? f.Email_funcionario ?? f.email ?? '',
+    setor: f.setor ?? '',
+    turno: f.turno_funcionario ?? f.Turno_funcionario ?? f.turno ?? '',
+    status: 'Ativo'
+  }))
 })
 
 const filteredEmployees = computed(() => {
@@ -143,7 +157,7 @@ const filteredEmployees = computed(() => {
 
 function openCreate() {
   editing.value = false
-  form.value = { nome: '', setor: '', turno: '', status: 'Ativo' }
+  form.value = { nome: '', email: '', setor: '', turno: '', status: 'Ativo' }
   openDialog.value = true
 }
 
@@ -153,11 +167,58 @@ function closeDialog() {
 
 function saveEmployee() {
   if (editing.value) {
-    employees.value = employees.value.map(e =>
-      e.id === editId.value ? { ...e, ...form.value } : e
-    )
+    // update in Supabase
+    supabase.from('funcionario')
+      .update({
+        nome_funcionario: form.value.nome,
+        email_funcionario: form.value.email,
+        turno_funcionario: form.value.turno
+      })
+      .eq('id_funcionario', editId.value)
+      .select()
+      .then(({ data, error }) => {
+        if (error) {
+          console.error('Erro ao atualizar funcionário', error)
+          return
+        }
+        const f = data[0]
+        employees.value = employees.value.map(e =>
+          e.id === editId.value
+            ? {
+                id: editId.value,
+                nome: f.nome_funcionario ?? form.value.nome,
+                email: f.email_funcionario ?? form.value.email,
+                setor: form.value.setor,
+                turno: f.turno_funcionario ?? form.value.turno,
+                status: form.value.status
+              }
+            : e
+        )
+      })
   } else {
-    employees.value.push({ id: Date.now(), ...form.value })
+    // insert into Supabase
+    supabase.from('funcionario')
+      .insert([{
+        nome_funcionario: form.value.nome,
+        email_funcionario: form.value.email,
+        turno_funcionario: form.value.turno
+      }])
+      .select()
+      .then(({ data, error }) => {
+        if (error) {
+          console.error('Erro ao inserir funcionário', error)
+          return
+        }
+        const f = data[0]
+        employees.value.push({
+          id: f.Id_funcionario,
+          nome: f.nome_funcionario,
+          email: f.email_funcionario || '',
+          setor: form.value.setor,
+          turno: f.turno_funcionario || '',
+          status: form.value.status
+        })
+      })
   }
   closeDialog()
 }
@@ -165,14 +226,21 @@ function saveEmployee() {
 function editEmployee(emp) {
   editing.value = true
   editId.value = emp.id
-  form.value = { ...emp }
+  form.value = { nome: emp.nome || '', email: emp.email || '', setor: emp.setor || '', turno: emp.turno || '', status: emp.status || 'Ativo' }
   openDialog.value = true
   openMenuId.value = null
 }
 
 function deleteEmployee(id) {
-  employees.value = employees.value.filter(e => e.id !== id)
-  openMenuId.value = null
+  // delete from Supabase then remove locally
+  supabase.from('funcionario').delete().eq('id_funcionario', id).then(({ error }) => {
+    if (error) {
+      console.error('Erro ao deletar funcionário', error)
+      return
+    }
+    employees.value = employees.value.filter(e => e.id !== id)
+    openMenuId.value = null
+  })
 }
 
 function toggleMenu(id) {

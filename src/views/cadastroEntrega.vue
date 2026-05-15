@@ -162,14 +162,33 @@
 
             <div>
               <label>Funcionário</label>
-
-              <input v-model="form.funcionario" />
+              <select v-model="form.funcionarioId">
+                <option value="" disabled>Selecione um funcionário</option>
+                <option
+                  v-for="func in _funcionarios"
+                  :key="func.id"
+                  :value="func.id"
+                >
+                  {{ func.nome }}
+                </option>
+              </select>
             </div>
 
             <div>
               <label>EPI</label>
-
-              <input v-model="form.epi" />
+              <select v-model="form.epiId">
+                <option value="" disabled>Selecione um EPI</option>
+                <option
+                  v-for="item in _epis"
+                  :key="item.id"
+                  :value="item.id"
+                >
+                  {{ item.nome }} (disponível: {{ item.quantidade }})
+                </option>
+              </select>
+              <div v-if="selectedEpi" class="info-text">
+                Disponível: {{ selectedEpi.quantidade }} unidades
+              </div>
             </div>
 
           </div>
@@ -224,7 +243,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { supabase } from '../composable/useSupabase'
 import header_2 from '../components/header_2.vue'
 import { UserPlus, RefreshCcw } from 'lucide-vue-next'
 
@@ -237,15 +257,51 @@ const openMenuId = ref(null)
 const editing = ref(false)
 const editId = ref(null)
 
-const entregas = ref([
-  {id: 1, funcionario: 'João Silva', epi: 'Capacete de Segurança', data: '10/05/2026', quantidade: 1, status: 'Entregue'},
+const entregas = ref([])
 
-  {id: 2, funcionario: 'Maria Santos', epi: 'Luva de Proteção', data: '11/05/2026', quantidade: 2, status: 'Pendente'},
+const _funcionarios = ref([])
+const _epis = ref([])
 
-  {id: 3, funcionario: 'Pedro Costa', epi: 'Óculos de Proteção', data: '12/05/2026', quantidade: 1, status: 'Entregue' }
-])
+onMounted(async () => {
+  const { data: fdata, error: ferr } = await supabase.from('funcionario').select('*')
+  if (ferr) console.error('Erro ao buscar funcionários', ferr)
+  _funcionarios.value = (fdata || []).map(f => ({
+    id: f.id_funcionario ?? f.Id_funcionario,
+    nome: f.nome_funcionario ?? f.Nome_funcionario ?? '',
+    email: f.email_funcionario ?? f.Email_funcionario ?? '',
+    turno: f.turno_funcionario ?? f.Turno_funcionario ?? ''
+  }))
+
+  const { data: edata, error: eerr } = await supabase.from('epi').select('*')
+  if (eerr) console.error('Erro ao buscar EPIs', eerr)
+  _epis.value = (edata || []).map(e => ({
+    id: e.id_epis ?? e.Id_epis,
+    nome: e.nome_epis ?? e.Nome_epis ?? '',
+    ca: e.ca_epis ?? e.CA_epis ?? null,
+    quantidade: e.qtd_epis ?? e.Qtd_epis ?? 0,
+    categoria: e.categoria_epis ?? e.Categoria_epis ?? ''
+  }))
+
+  const { data: entregasData, error: entregErr } = await supabase.from('entrega').select('*')
+  if (entregErr) {
+    console.error('Erro ao buscar entregas', entregErr)
+    return
+  }
+  entregas.value = (entregasData || []).map(it => ({
+    id: it.id_entrega ?? it.Id_entrega,
+    funcionarioId: it.id_funcionario ?? it.Id_funcionario,
+    epiId: it.id_epi,
+    funcionario: (_funcionarios.value.find(f => f.id === (it.id_funcionario ?? it.Id_funcionario)) || {}).nome || String(it.id_funcionario ?? it.Id_funcionario),
+    epi: (_epis.value.find(e => e.id === it.id_epi) || {}).nome || String(it.id_epi),
+    data: it.dt_entrega ? new Date(it.dt_entrega).toLocaleDateString() : '',
+    quantidade: it.quantidade || 1,
+    status: it.dt_devolucao ? 'Devolvido' : 'Entregue'
+  }))
+})
 
 const form = ref({
+  funcionarioId: '',
+  epiId: '',
   funcionario: '',
   epi: '',
   data: '',
@@ -263,6 +319,10 @@ const filteredEntregas = computed(() => {
       .toLowerCase()
       .includes(searchTerm.value.toLowerCase())
   )
+})
+
+const selectedEpi = computed(() => {
+  return _epis.value.find(e => e.id === form.value.epiId)
 })
 
 const entregasPendentes = computed(() => {
@@ -295,23 +355,118 @@ function closeDialog() {
   openDialog.value = false
 }
 
-function saveEntrega() {
+async function saveEntrega() {
+  const funcionario = _funcionarios.value.find(f => f.id === form.value.funcionarioId)
+  const epi = _epis.value.find(e => e.id === form.value.epiId)
+  const quantValue = parseInt(form.value.quantidade, 10)
+
+  if (!funcionario) {
+    console.error('Selecione um funcionário válido')
+    return
+  }
+
+  if (!epi) {
+    console.error('Selecione um EPI válido')
+    return
+  }
+
+  if (Number.isNaN(quantValue) || quantValue <= 0) {
+    console.error('Quantidade deve ser maior que zero')
+    return
+  }
+
+  const available = epi.quantidade
+  if (quantValue > available) {
+    console.error('Quantidade solicitada maior que o disponível')
+    return
+  }
 
   if (editing.value) {
+    const currentEntrega = entregas.value.find(e => e.id === editId.value)
+    const quantityDelta = quantValue - (currentEntrega?.quantidade || 0)
+    const newStock = epi.quantidade - quantityDelta
+
+    if (newStock < 0) {
+      console.error('Não há EPI suficiente para essa alteração')
+      return
+    }
+
+    const { data, error } = await supabase.from('entrega')
+      .update({
+        id_funcionario: funcionario.id,
+        id_epi: epi.id,
+        dt_entrega: form.value.data,
+        quantidade: quantValue
+      })
+      .eq('id_entrega', editId.value)
+      .select()
+
+    if (error) {
+      console.error('Erro ao atualizar entrega', error)
+      return
+    }
+
+    if (quantityDelta !== 0) {
+      await supabase.from('epi')
+        .update({ qtd_epis: newStock })
+        .eq('id_epis', epi.id)
+
+      const epiIndex = _epis.value.findIndex(item => item.id === epi.id)
+      if (epiIndex !== -1) {
+        _epis.value[epiIndex].quantidade = newStock
+      }
+    }
 
     entregas.value = entregas.value.map(e =>
       e.id === editId.value
-        ? { ...e, ...form.value }
+        ? {
+            ...e,
+            funcionarioId: funcionario.id,
+            epiId: epi.id,
+            funcionario: funcionario.nome,
+            epi: epi.nome,
+            data: form.value.data ? new Date(form.value.data).toLocaleDateString() : e.data,
+            quantidade: quantValue
+          }
         : e
     )
-
   } else {
+    const insertObj = {
+      id_funcionario: funcionario.id,
+      id_epi: epi.id,
+      dt_entrega: form.value.data,
+      dt_devolucao: null,
+      assinatura: false,
+      observacao: null,
+      quantidade: quantValue
+    }
 
+    const { data, error } = await supabase.from('entrega').insert([insertObj]).select()
+    if (error) {
+      console.error('Erro ao inserir entrega', error)
+      return
+    }
+
+    const it = data[0]
     entregas.value.push({
-      id: Date.now(),
-      ...form.value
+      id: it.id_entrega,
+      funcionarioId: funcionario.id,
+      epiId: epi.id,
+      funcionario: funcionario.nome,
+      epi: epi.nome,
+      data: it.dt_entrega ? new Date(it.dt_entrega).toLocaleDateString() : form.value.data,
+      quantidade: quantValue,
+      status: 'Entregue'
     })
 
+    await supabase.from('epi')
+      .update({ qtd_epis: available - quantValue })
+      .eq('id_epis', epi.id)
+
+    const epiIndex = _epis.value.findIndex(item => item.id === epi.id)
+    if (epiIndex !== -1) {
+      _epis.value[epiIndex].quantidade = available - quantValue
+    }
   }
 
   closeDialog()
@@ -322,18 +477,39 @@ function editEntrega(entrega) {
 
   editId.value = entrega.id
 
-  form.value = { ...entrega }
+  form.value = {
+    funcionarioId: entrega.funcionarioId,
+    epiId: entrega.epiId,
+    funcionario: entrega.funcionario,
+    epi: entrega.epi,
+    data: entrega.data ? new Date(entrega.data.split('/').reverse().join('-')).toISOString().slice(0, 10) : '',
+    quantidade: entrega.quantidade,
+    status: entrega.status
+  }
 
   openDialog.value = true
 
   openMenuId.value = null
 }
 
-function deleteEntrega(id) {
-  entregas.value = entregas.value.filter(
-    e => e.id !== id
-  )
+async function deleteEntrega(id) {
+  const entrega = entregas.value.find(e => e.id === id)
+  if (!entrega) return
 
+  const { error } = await supabase.from('entrega').delete().eq('id_entrega', id)
+  if (error) {
+    console.error('Erro ao deletar entrega', error)
+    return
+  }
+
+  const epi = _epis.value.find(item => item.id === entrega.epiId)
+  if (epi) {
+    const newStock = epi.quantidade + entrega.quantidade
+    await supabase.from('epi').update({ qtd_epis: newStock }).eq('id_epis', epi.id)
+    epi.quantidade = newStock
+  }
+
+  entregas.value = entregas.value.filter(e => e.id !== id)
   openMenuId.value = null
 }
 

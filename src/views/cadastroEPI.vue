@@ -55,16 +55,11 @@
           </td>
 
        <td class="actions-cell">
-        <div class="menu-wrapper">
-         <button class="dots"@click="toggleMenu(epi.id)">⋮</button>
-
-        <div
-         v-if="openMenuId === epi.id"class="dropdown">
-          <button @click="editEmployee(epi)">Editar</button>
-          <button class="danger"@click="deleteEmployee(epi.id)">Excluir</button>
-            </div>
-             </div>
-              </td>
+        <div class="actions-row">
+          <button type="button" class="btn-action" @click="editEmployee(epi)">Editar</button>
+          <button type="button" class="btn-action danger" @click="deleteEmployee(epi.id)">Excluir</button>
+        </div>
+       </td>
                </tr>
 
       <tr v-if="filteredEpis.length === 0">
@@ -90,7 +85,7 @@
 
    <div>
     <label>CA</label>
-    <input v-model="form.ca" />
+    <input type="number" v-model.number="form.ca" min="0" />
      </div>
       </div>
 
@@ -107,7 +102,8 @@
   <div>
   <label>Quantidade</label>
    <input type="number"
-   v-model="form.quantidade"/>
+   v-model.number="form.quantidade"
+   min="0" />
     </div>
      </div>
       </div>
@@ -122,15 +118,12 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { supabase } from '../composable/useSupabase'
 import header_2 from '../components/header_2.vue'
 import { UserPlus, RefreshCcw } from 'lucide-vue-next'
 
-const epis = ref([
-  { id: 1, nome: 'Capacete', ca: '12345',tamanho: 'M',quantidade: 20,status: 'Disponível'},
-  { id: 2, nome: 'Luva', ca: '54321', tamanho: 'G', quantidade: 8, status: 'Baixo estoque' },
-  { id: 3, nome: 'Óculos de proteção', ca: '67890', tamanho: 'Único', quantidade: 0, status: 'Indisponível' }
-])
+const epis = ref([])
 
 const searchTerm = ref('')
 const openDialog = ref(false)
@@ -144,6 +137,24 @@ const form = ref({
   tamanho: '',
   quantidade: 0,
   status: 'Disponível'
+})
+
+onMounted(async () => {
+  const { data, error } = await supabase
+    .from('epi')
+    .select('*')
+  if (error) {
+    console.error('Erro ao buscar EPIs', error)
+    return
+  }
+  epis.value = (data || []).map(e => ({
+    id: e.id_epis ?? e.Id_epis,
+    nome: e.nome_epis ?? e.Nome_epis ?? '',
+    ca: e.ca_epis != null ? String(e.ca_epis) : '',
+    tamanho: e.categoria_epis ?? e.Categoria_epis ?? '',
+    quantidade: e.qtd_epis ?? e.qtd_epis ?? 0,
+    status: (e.qtd_epis ?? e.qtd_epis ?? 0) > 0 ? 'Disponível' : 'Indisponível'
+  }))
 })
 
 const filteredEpis = computed(() => {
@@ -171,17 +182,75 @@ function closeDialog() {
 
 function saveEmployee() {
  if (editing.value) {
-  epis.value = epis.value.map(e =>
-      e.id === editId.value
-        ? { ...e, ...form.value }
-        : e
-    )
+    const caValue = parseInt(form.value.ca, 10)
+    const quantValue = parseInt(form.value.quantidade, 10)
 
+    if (Number.isNaN(caValue) || Number.isNaN(quantValue)) {
+      console.error('CA e Quantidade devem ser números válidos')
+      return
+    }
+
+    supabase.from('epi')
+      .update({
+        nome_epis: form.value.nome,
+        categoria_epis: form.value.tamanho,
+        ca_epis: caValue,
+        qtd_epis: quantValue
+      })
+      .eq('id_epis', editId.value)
+      .select()
+      .then(({ data, error }) => {
+        if (error) {
+          console.error('Erro ao atualizar EPI', error)
+          return
+        }
+        const e = data[0]
+        epis.value = epis.value.map(item =>
+          item.id === editId.value
+            ? {
+                id: e.id_epis ?? e.Id_epis,
+                nome: e.nome_epis ?? form.value.nome,
+                ca: e.ca_epis != null ? String(e.ca_epis) : form.value.ca,
+                tamanho: e.categoria_epis ?? form.value.tamanho,
+                quantidade: e.qtd_epis ?? quantValue,
+                status: (e.qtd_epis ?? quantValue) > 0 ? 'Disponível' : 'Indisponível'
+              }
+            : item
+        )
+      })
   } else {
-   epis.value.push({
-   id: Date.now(),
-   ...form.value
-  })
+    const caValue = parseInt(form.value.ca, 10)
+    const quantValue = parseInt(form.value.quantidade, 10)
+
+    if (Number.isNaN(caValue) || Number.isNaN(quantValue)) {
+      console.error('CA e Quantidade devem ser números válidos')
+      return
+    }
+
+    // insert into Supabase
+    supabase.from('epi')
+      .insert([{
+        nome_epis: form.value.nome,
+        categoria_epis: form.value.tamanho,
+        ca_epis: caValue,
+        qtd_epis: quantValue
+      }])
+      .select()
+      .then(({ data, error }) => {
+        if (error) {
+          console.error('Erro ao inserir EPI', error)
+          return
+        }
+        const e = data[0]
+        epis.value.push({
+          id: e.id_epis ?? e.Id_epis,
+          nome: e.nome_epis,
+          ca: e.ca_epis ? String(e.ca_epis) : '',
+          tamanho: e.categoria_epis || '',
+          quantidade: e.qtd_epis || 0,
+          status: e.qtd_epis > 0 ? 'Disponível' : 'Indisponível'
+        })
+      })
 }
  closeDialog()
 }
@@ -195,8 +264,14 @@ function editEmployee(epi) {
 }
 
 function deleteEmployee(id) {
-  epis.value = epis.value.filter(e => e.id !== id)
-  openMenuId.value = null
+  supabase.from('epi').delete().eq('id_epis', id).then(({ error }) => {
+    if (error) {
+      console.error('Erro ao deletar EPI', error)
+      return
+    }
+    epis.value = epis.value.filter(e => e.id !== id)
+    openMenuId.value = null
+  })
 }
 
 function toggleMenu(id) {
@@ -413,6 +488,30 @@ function refreshList() {
 .actions-cell {
   position: relative;
   padding-left: 0;
+}
+
+.actions-row {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-action {
+  background: #f8fafc;
+  border: 1px solid #dbe2ea;
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+.btn-action:hover {
+  background: #eef2f7;
+}
+
+.btn-action.danger {
+  color: #ef4444;
+  border-color: #fecaca;
 }
 
 .menu-wrapper {
