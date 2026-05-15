@@ -21,6 +21,7 @@
       <p @click="goToRelatorio">Relatórios</p>
       <p @click="goTocadastroFuncionario">Funcionários</p>
       <p @click="goTocadastroEPI">Cadastro de EPIs</p>
+       <p @click="goTocadastroEntrega">Cadastro de Entregas</p>
     </aside>
 
     <div v-if="menuOpen" class="overlay" @click="closeMenu"></div>
@@ -61,6 +62,11 @@ function goTocadastroFuncionario() {
 function goTocadastroEPI() {
   closeMenu()
   router.push('/cadastro-epi')
+}
+
+function goTocadastroEntrega() {
+  closeMenu()
+  router.push('/cadastro-entrega')
 }
 
 </script>

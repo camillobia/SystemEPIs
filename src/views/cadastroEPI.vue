@@ -236,7 +236,7 @@ function refreshList() {
 .title {
   font-size: 2.3rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #0e2238;
 }
 
 .actions {
