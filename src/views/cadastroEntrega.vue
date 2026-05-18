@@ -5,7 +5,7 @@
     <div class="container">
 
       <div class="header-title">
-        <h1 class="title">Relatórios de Entregas</h1>
+        <h1 class="title">Cadastro de Entregas</h1>
       </div>
 
       
@@ -18,9 +18,9 @@
             Nova Entrega
           </button>
 
-          <button class="btn btn-outline" @click="refreshList">
-            <RefreshCcw class="icon" />
-            Atualizar
+          <button class="btn btn-refresh btn">
+          <RefreshCcw class="icon" />
+          Atualizar
           </button>
         </div>
 
@@ -39,9 +39,9 @@
             <option>Últimos 90 dias</option>
           </select>
 
-          <button class="btn btn-outline">
-            Exportar
-          </button>
+         <button class="btn btn-export btn">
+           Exportar
+            </button>
 
         </div>
 
@@ -160,9 +160,9 @@
 
           <div class="grid">
 
-            <div>
+            <div class="field-group">
               <label>Funcionário</label>
-              <select v-model="form.funcionarioId">
+              <select class="form-control" v-model="form.funcionarioId">
                 <option value="" disabled>Selecione um funcionário</option>
                 <option
                   v-for="func in _funcionarios"
@@ -174,9 +174,9 @@
               </select>
             </div>
 
-            <div>
+            <div class="field-group">
               <label>EPI</label>
-              <select v-model="form.epiId">
+              <select class="form-control" v-model="form.epiId">
                 <option value="" disabled>Selecione um EPI</option>
                 <option
                   v-for="item in _epis"
@@ -600,20 +600,19 @@ function refreshList() {
 }
 
 .btn {
-  width: 190px;
   height: 55px;
   border-radius: 14px;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   gap: 10px;
-  padding-left: 22px;
+  padding: 0 22px;
   font-size: 17px;
   font-weight: 500;
   font-family: 'Inter', sans-serif;
   transition: .2s;
+  font-family: 'Inter', sans-serif;
 }
 
 
@@ -621,15 +620,23 @@ function refreshList() {
   transform:translateY(-1px);
 }
 
-.btn-primary{
-  background:#0f172a;
-  color:white;
+.btn-primary {
+  background: #0f172a;
+  color: white;
+  width: 190px;
 }
 
-.btn-outline{
-  background-color:white;
-  border:1px solid #dbe2ea;
-  color:#0f172a;
+.btn-refresh {
+  background: #ffffff;
+  color: #0f172a;
+  border: 1px solid #dbe2ea;
+  width: 150px;
+}
+
+.btn-export {
+  background: #0e2238 ;
+  color: white;
+  width: 120px;
 }
 
 .icon{
@@ -706,6 +713,7 @@ function refreshList() {
   border:none;
   font-size:22px;
   cursor:pointer;
+  margin-left:25px;
 }
 
 .menu-wrapper{
@@ -714,8 +722,8 @@ function refreshList() {
 
 .dropdown{
   position:absolute;
-  top:30px;
-  right:0;
+  top:-96px;
+  right:80px;
   background:white;
   border:1px solid #e5e7eb;
   border-radius:12px;
@@ -804,13 +812,42 @@ label{
   color:#334155;
 }
 
-input{
+input,
+select.form-control {
   width:100%;
   height:48px;
   border-radius:12px;
   border:1px solid #dbe2ea;
-  padding:0 12px;
+  padding:0 14px;
   outline:none;
+  background:white;
+  font-size:15px;
+}
+
+select.form-control {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%2364718b' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 12px 8px;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.info-text {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #475569;
+  background: #eef2ff;
+  border: 1px solid #dbeafe;
+  padding: 10px 14px;
+  border-radius: 12px;
 }
 
 .modal-actions{

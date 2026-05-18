@@ -2,129 +2,189 @@
   <header_2 />
 
   <div class="page">
-   <div class="container">
-    <div class="header-title">
-     <h1 class="title">Cadastro de EPIs</h1>
+    <div class="container">
+
+      <div class="header-title">
+        <h1 class="title">Cadastro de EPIs</h1>
       </div>
 
-   <div class="actions">
-    <div class="buttons">
-     <button class="btn btn-primary" @click="openCreate">
-      <UserPlus class="icon" />Cadastrar</button>
+      <div class="actions">
+        <div class="buttons">
 
-     <button class="btn btn-outline" @click="refreshList">
-      <RefreshCcw class="icon" />Atualizar</button>
-       </div>
+<button type="button" class="btn btn-primary" @click.prevent="openCreate">
+            <UserPlus class="icon" />
+            Cadastrar
+          </button>
+ 
+          <button type="button" class="btn btn-outline" @click.prevent="refreshList">
+            <RefreshCcw class="icon" />
+            Atualizar
+          </button>
+
+        </div>
+      </div>
+
+      <div class="search-box">
+        <input v-model="searchTerm" placeholder="Buscar um EPI..." />
+      </div>
+
+      <div class="table-box">
+
+        <div class="table-header-dark">
+          <h2>EPIs</h2>
         </div>
 
-  <div class="search-box">
-    <input v-model="searchTerm" placeholder="Buscar um EPI..."/>
-     </div>
+        <div class="table-wrapper">
 
-  <div class="table-box">
-   <div class="table-header-dark"><h2>EPIs</h2>
-    </div>
+          <table class="table">
 
-  <div class="table-wrapper">
-   <table class="table">
-    <thead>
-      <tr><th>NOME</th>
-          <th>CA</th>
-          <th>TAMANHO</th>
-          <th>QUANTIDADE</th>
-          <th>STATUS</th>
-          <th>AÇÕES</th>
-          </tr>
-           </thead>
+            <thead>
+              <tr>
+                <th>NOME</th>
+                <th>CA</th>
+                <th>TAMANHO</th>
+                <th>QUANTIDADE</th>
+                <th>DATA VALIDADE</th>
+                <th>STATUS</th>
+                <th>AÇÕES</th>
+              </tr>
+            </thead>
+
             <tbody>
-           
-      <tr v-for="epi in filteredEpis":key="epi.id">
-        <td class="name-cell">{{ epi.nome }}</td>
 
-        <td class="code-cell">{{ epi.ca }}</td>
+              <tr v-for="epi in filteredEpis" :key="epi.id">
 
-        <td><span class="size-text">{{ epi.tamanho }}</span>
-         </td>
+                <td>{{ epi.nome }}</td>
+                <td>{{ epi.ca }}</td>
+                <td>{{ epi.tamanho }}</td>
+                <td>{{ epi.quantidade }}</td>
+                <td>{{ epi.dataValidade }}</td>
 
-        <td><span class="quantity-number">{{ epi.quantidade }}</span>
-         </td>
-               
-        <td> <span :class="epi.status === 'Disponível'
-                    ? 'status-active': epi.status === 'Baixo estoque'
-                    ? 'status-warning' : 'status-inactive' ">{{ epi.status }}</span>
-          </td>
+                <td>
+                  <span
+                    :class="epi.status === 'Disponível'
+                      ? 'status-active'
+                      : epi.status === 'Baixo estoque'
+                      ? 'status-warning'
+                      : 'status-inactive'"
+                  >
+                    {{ epi.status }}
+                  </span>
+                </td>
 
-       <td class="actions-cell">
-        <div class="actions-row">
-          <button type="button" class="btn-action" @click="editEmployee(epi)">Editar</button>
-          <button type="button" class="btn-action danger" @click="deleteEmployee(epi.id)">Excluir</button>
+                <td class="actions-cell">
+
+                  <button class="dots" @click.stop="toggleMenu(epi.id)">
+                    ⋮
+                  </button>
+
+                  <div v-if="openMenuId === epi.id" class="dropdown">
+
+                    <button @click="editEpi(epi)">
+                      Editar
+                    </button>
+
+                    <button class="danger" @click="deleteEpi(epi.id)">
+                      Excluir
+                    </button>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+              <tr v-if="filteredEpis.length === 0">
+                <td colspan="7" class="empty-state">
+                  Nenhum EPI encontrado
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+
         </div>
-       </td>
-               </tr>
-
-      <tr v-if="filteredEpis.length === 0">
-      <td colspan="6" class="empty-state">Nenhum EPI encontrado</td>
-          </tr>
-           </tbody>
-            </table>
-              </div>
-               </div>
-                </div>
-
-    <div v-if="openDialog"class="modal-overlay">
-     <div class="modal">
-      <div class="modal-header"><h3>{{ editing ? 'Editar EPI' : 'Cadastrar EPI' }}</h3>
-        <button @click="closeDialog">✕</button>
-         </div>
-
-   <div class="form">
-    <div class="grid">
-     <div><label>Nome do EPI</label>
-     <input v-model="form.nome" />
       </div>
-
-   <div>
-    <label>CA</label>
-    <input type="number" v-model.number="form.ca" min="0" />
-     </div>
-      </div>
-
-  <div class="grid">
-   <div>
-   <label>Tamanho</label>
-    <select v-model="form.tamanho"><option>P</option>
-                                   <option>M</option>
-                                   <option>G</option>
-                                   <option>GG</option>
-      </select>
-       </div>
-
-  <div>
-  <label>Quantidade</label>
-   <input type="number"
-   v-model.number="form.quantidade"
-   min="0" />
     </div>
-     </div>
+
+    <div v-if="openDialog" class="modal-overlay">
+
+      <div class="modal">
+
+        <div class="modal-header">
+          <h3>{{ editing ? 'Editar EPI' : 'Cadastrar EPI' }}</h3>
+          <button @click="closeDialog">✕</button>
+        </div>
+
+        <div class="form">
+
+          <div class="grid">
+
+            <div>
+              <label>Nome</label>
+              <input v-model="form.nome" />
+            </div>
+
+            <div>
+              <label>CA</label>
+              <input v-model="form.ca" />
+            </div>
+
+          </div>
+
+          <div class="grid">
+
+            <div>
+              <label>Tamanho</label>
+              <select v-model="form.tamanho">
+                <option>P</option>
+                <option>M</option>
+                <option>G</option>
+                <option>GG</option>
+                <option>Único</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Data Validade</label>
+              <input type="date" v-model="form.data_validade" />
+            </div>
+
+            <div>
+              <label>Quantidade</label>
+              <input type="number" v-model.number="form.quantidade" />
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="modal-actions">
+
+          <button type="button" class="btn btn-outline" @click.prevent="closeDialog">
+            Cancelar
+          </button>
+
+          <button type="button" class="btn btn-primary" @click.prevent="saveEpi">
+            Salvar
+          </button>
+
+        </div>
+
       </div>
 
-  <div class="modal-actions">
-   <button class="btn btn-outline" @click="closeDialog">Cancelar</button>
-   <button class="btn btn-primary"@click="saveEmployee">Salvar</button>
     </div>
-     </div>
-      </div>
-       </div>
+  </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { supabase } from '../composable/useSupabase'
 import header_2 from '../components/header_2.vue'
 import { UserPlus, RefreshCcw } from 'lucide-vue-next'
 
 const epis = ref([])
-
 const searchTerm = ref('')
 const openDialog = ref(false)
 const openMenuId = ref(null)
@@ -136,43 +196,102 @@ const form = ref({
   ca: '',
   tamanho: '',
   quantidade: 0,
-  status: 'Disponível'
+  data_validade: ''
 })
 
-onMounted(async () => {
+async function loadEpis() {
   const { data, error } = await supabase
     .from('epi')
     .select('*')
+
   if (error) {
-    console.error('Erro ao buscar EPIs', error)
+    console.error('Erro ao carregar EPIs', error)
     return
   }
+  console.log('loadEpis raw data (json):', JSON.stringify(data, null, 2))
+  console.log(
+    'loadEpis datas por registro (json):',
+    JSON.stringify(
+      (data || []).map(d => ({
+        id: d.id_epis,
+        nome: d.nome_epis,
+        data_val: d.data_val ?? null,
+        data_validade: d.data_validade ?? null,
+        Data_Val: d.Data_Val ?? null
+      })),
+      null,
+      2
+    )
+  )
+
   epis.value = (data || []).map(e => ({
-    id: e.id_epis ?? e.Id_epis,
-    nome: e.nome_epis ?? e.Nome_epis ?? '',
+    id: e.id_epis,
+    nome: e.nome_epis ?? '',
     ca: e.ca_epis != null ? String(e.ca_epis) : '',
-    tamanho: e.categoria_epis ?? e.Categoria_epis ?? '',
-    quantidade: e.qtd_epis ?? e.qtd_epis ?? 0,
-    status: (e.qtd_epis ?? e.qtd_epis ?? 0) > 0 ? 'Disponível' : 'Indisponível'
-  }))
+    tamanho: e.categoria_epis ?? e.tamanho_epis ?? '',
+    quantidade: Number(e.qtd_epis) || 0,
+
+    data_validade:
+      e.data_validade ??
+      e.data_val ??
+      e.Data_Val ??
+      e.data_validade_epis ?? '',
+
+    dataValidade:
+      (e.data_validade ?? e.data_val ?? e.Data_Val ?? e.data_validade_epis)
+        ? new Date(
+            e.data_validade ??
+            e.data_val ??
+            e.Data_Val ??
+            e.data_validade_epis
+          ).toLocaleDateString('pt-BR')
+        : 'Não informado',
+
+  status:
+    Number(e.qtd_epis) > 5
+      ? 'Disponível'
+      : Number(e.qtd_epis) > 0
+      ? 'Baixo estoque'
+      : 'Indisponível'
+}))
+}
+
+onMounted(async () => {
+  await loadEpis()
+  document.addEventListener('click', closeMenu)
 })
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', closeMenu)
+})
+
+function closeMenu(event) {
+  if (!event.target.closest('.dots') && !event.target.closest('.dropdown')) {
+    openMenuId.value = null
+  }
+}
 
 const filteredEpis = computed(() => {
   return epis.value.filter(e =>
     e.nome.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-    e.ca.toLowerCase().includes(searchTerm.value.toLowerCase())
+    String(e.ca || '')
+      .toLowerCase()
+      .includes(searchTerm.value.toLowerCase())
   )
 })
 
 function openCreate() {
   editing.value = false
+  editId.value = null
+
   form.value = {
     nome: '',
     ca: '',
     tamanho: '',
     quantidade: 0,
-    status: 'Disponível'
+    data_validade: ''
   }
+
   openDialog.value = true
 }
 
@@ -180,112 +299,84 @@ function closeDialog() {
   openDialog.value = false
 }
 
-function saveEmployee() {
- if (editing.value) {
-    const caValue = parseInt(form.value.ca, 10)
-    const quantValue = parseInt(form.value.quantidade, 10)
+async function saveEpi() {
+  const quantityValue = Number(form.value.quantidade)
 
-    if (Number.isNaN(caValue) || Number.isNaN(quantValue)) {
-      console.error('CA e Quantidade devem ser números válidos')
-      return
-    }
+  if (!form.value.nome || Number.isNaN(quantityValue)) {
+    console.error('Campos obrigatórios faltando ou inválidos', form.value)
+    return
+  }
 
-    supabase.from('epi')
-      .update({
-        nome_epis: form.value.nome,
-        categoria_epis: form.value.tamanho,
-        ca_epis: caValue,
-        qtd_epis: quantValue
-      })
-      .eq('id_epis', editId.value)
-      .select()
-      .then(({ data, error }) => {
-        if (error) {
-          console.error('Erro ao atualizar EPI', error)
-          return
-        }
-        const e = data[0]
-        epis.value = epis.value.map(item =>
-          item.id === editId.value
-            ? {
-                id: e.id_epis ?? e.Id_epis,
-                nome: e.nome_epis ?? form.value.nome,
-                ca: e.ca_epis != null ? String(e.ca_epis) : form.value.ca,
-                tamanho: e.categoria_epis ?? form.value.tamanho,
-                quantidade: e.qtd_epis ?? quantValue,
-                status: (e.qtd_epis ?? quantValue) > 0 ? 'Disponível' : 'Indisponível'
-              }
-            : item
-        )
-      })
-  } else {
-    const caValue = parseInt(form.value.ca, 10)
-    const quantValue = parseInt(form.value.quantidade, 10)
+  const payload = {
+    nome_epis: form.value.nome,
+    ca_epis: form.value.ca || null,
+    categoria_epis: form.value.tamanho,
+    qtd_epis: quantityValue,
+    data_val: form.value.data_validade || null
+  }
 
-    if (Number.isNaN(caValue) || Number.isNaN(quantValue)) {
-      console.error('CA e Quantidade devem ser números válidos')
-      return
-    }
+  console.log('saveEpi payload:', payload)
 
-    // insert into Supabase
-    supabase.from('epi')
-      .insert([{
-        nome_epis: form.value.nome,
-        categoria_epis: form.value.tamanho,
-        ca_epis: caValue,
-        qtd_epis: quantValue
-      }])
-      .select()
-      .then(({ data, error }) => {
-        if (error) {
-          console.error('Erro ao inserir EPI', error)
-          return
-        }
-        const e = data[0]
-        epis.value.push({
-          id: e.id_epis ?? e.Id_epis,
-          nome: e.nome_epis,
-          ca: e.ca_epis ? String(e.ca_epis) : '',
-          tamanho: e.categoria_epis || '',
-          quantidade: e.qtd_epis || 0,
-          status: e.qtd_epis > 0 ? 'Disponível' : 'Indisponível'
-        })
-      })
-}
- closeDialog()
+  const result = editing.value
+    ? await supabase
+        .from('epi')
+        .update(payload)
+        .eq('id_epis', editId.value)
+    : await supabase
+        .from('epi')
+        .insert([payload])
+
+  console.log('saveEpi result:', result)
+
+  if (result.error) {
+    console.error('Erro Supabase:', result.error)
+    console.error('Erro Supabase detalhes:', result.error?.message, result.error?.details, result.error?.hint, result.status)
+    alert('Erro ao salvar EPI: ' + (result.error.message || JSON.stringify(result.error)))
+    return
+  }
+
+  await loadEpis()
+  closeDialog()
 }
 
-function editEmployee(epi) {
+function editEpi(epi) {
   editing.value = true
   editId.value = epi.id
-  form.value = { ...epi }
+
+  form.value = {
+    nome: epi.nome,
+    ca: epi.ca,
+    tamanho: epi.tamanho,
+    quantidade: epi.quantidade,
+    data_validade: epi.data_validade ?? ''
+  }
+
   openDialog.value = true
   openMenuId.value = null
 }
 
-function deleteEmployee(id) {
-  supabase.from('epi').delete().eq('id_epis', id).then(({ error }) => {
-    if (error) {
-      console.error('Erro ao deletar EPI', error)
-      return
-    }
-    epis.value = epis.value.filter(e => e.id !== id)
-    openMenuId.value = null
-  })
+async function deleteEpi(id) {
+  const { error } = await supabase
+    .from('epi')  
+    .delete()
+    .eq('id_epis', id)
+
+  if (error) {
+    console.error('Erro ao deletar EPI', error)
+    return
+  }
+
+  epis.value = epis.value.filter(e => e.id !== id)
 }
 
 function toggleMenu(id) {
-  openMenuId.value =
-    openMenuId.value === id
-      ? null
-      : id
+  openMenuId.value = openMenuId.value === id ? null : id
 }
 
-function refreshList() {
-  epis.value = [...epis.value]
+async function refreshList() {
+  await loadEpis()
 }
 </script>
-
 <style scoped>
 
 * {
@@ -393,13 +484,16 @@ function refreshList() {
 .table-box {
   background: white;
   border-radius: 22px;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 4px 20px rgba(0,0,0,.04);
+  
 }
 
 .table-header-dark {
   background: #0f172a;
   padding: 22px;
+  border-top-left-radius: 22px;
+  border-top-right-radius: 22px;
 }
 
 .table-header-dark h2 {
@@ -409,27 +503,28 @@ function refreshList() {
 }
 
 .table-wrapper {
-  overflow-x: auto;
+  overflow: visible;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
+  overflow: visible;
 }
 
 .table th {
   background: #f8fafc;
   padding: 18px;
   text-align: left;
- font-size: 16px;
- font-weight: 800;
- color: #0e2238;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0e2238;
 }
 
 .table td {
   padding: 18px;
   border-top: 1px solid #eef2f7;
-  font-size: 16px; 
+  font-size: 16px;
   font-weight: 400;
   vertical-align: middle;
 }
@@ -449,15 +544,7 @@ function refreshList() {
   color: #475569;
 }
 
-.quantity-number {
-  display: inline-block;
-  margin-left: 40px;
-}
 
-.size-text {
-  display: inline-block;
-  margin-left: 38px;
-}
 
 .status-active {
   background: #dcfce7;
@@ -476,6 +563,7 @@ function refreshList() {
   font-size: 14px;
   font-weight: 600;
 }
+
 .status-inactive {
   background: #fee2e2;
   color: #991b1b;
@@ -487,35 +575,11 @@ function refreshList() {
 
 .actions-cell {
   position: relative;
-  padding-left: 0;
-}
-
-.actions-row {
-  display: flex;
-  gap: 8px;
-}
-
-.btn-action {
-  background: #f8fafc;
-  border: 1px solid #dbe2ea;
-  border-radius: 10px;
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 14px;
-  color: #0f172a;
-}
-
-.btn-action:hover {
-  background: #eef2f7;
-}
-
-.btn-action.danger {
-  color: #ef4444;
-  border-color: #fecaca;
+  overflow: visible;
 }
 
 .menu-wrapper {
-  position: relative;
+  position: static;
 }
 
 .dots {
@@ -523,21 +587,23 @@ function refreshList() {
   border: none;
   font-size: 22px;
   cursor: pointer;
-  margin-left: 20px;
+  margin-left: 25px;
 }
 
 .dropdown {
   position: absolute;
-
-  right: 0;
-  top: 32px;
+  top: 10px;
+  right: 80px;
   background: white;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   min-width: 140px;
+  z-index: 99999;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  z-index: 20;
-  box-shadow: 0 6px 20px rgba(0,0,0,.08);
 }
 
 .dropdown button {
@@ -547,6 +613,8 @@ function refreshList() {
   border: none;
   text-align: left;
   cursor: pointer;
+
+  display: block;
 }
 
 .dropdown button:hover {
@@ -570,7 +638,6 @@ function refreshList() {
   display: flex;
   justify-content: center;
   align-items: center;
-
   z-index: 100;
 }
 
@@ -627,7 +694,6 @@ select {
   padding: 0 12px;
   border-radius: 12px;
   border: 1px solid #dbe2ea;
-
   outline: none;
 }
 
@@ -653,20 +719,26 @@ select:focus {
 }
 
 @media (max-width: 768px) {
+
   .title {
     font-size: 1.8rem;
   }
+
   .buttons {
     flex-direction: column;
   }
+
   .btn {
     width: 100%;
   }
+
   .search-box {
     width: 100%;
   }
+
   .grid {
     grid-template-columns: 1fr;
   }
 }
+
 </style>

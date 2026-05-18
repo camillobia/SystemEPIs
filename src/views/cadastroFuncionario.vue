@@ -1,115 +1,215 @@
 <template>
   <header_2 />
-   <div class="page">
+
+  <div class="page">
     <div class="container">
-     <div class="header">
-     </div>
-
-    <div class="header-title">
-      <h1 class="title">Cadastro de Funcionários</h1>
-       </div>
-      
-
-    <div class="actions">
-      <div class="buttons">
-       <button class="btn btn-primary" @click="openCreate">
-         <UserPlus class="icon" />Cadastrar</button>
-
-      <button class="btn btn-outline" @click="refreshList">
-      <RefreshCcw class="icon" />Atualizar</button>
-        </div>
-         </div>
-
-    <div class="search-box"> <input v-model="searchTerm"
-         placeholder="Buscar funcionário..." />
-          </div>
-
-    <div class="table-box">
-     <div class="table-header-dark"><h2>Funcionários</h2>
+      <div class="header-title">
+        <h1 class="title">Cadastro de Funcionários</h1>
       </div>
 
-    <div class="table-wrapper">
-     <table class="table">
-       <thead><tr><th>Nome</th>
-                  <th>Setor</th>
-                  <th>Turno</th>
-                  <th>Status</th>
-                  <th>Ações</th>
-       </tr>
-        </thead>
+      <div class="actions">
+        <div class="buttons">
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click.prevent="openCreate"
+          >
+            <UserPlus class="icon" />
+            Cadastrar
+          </button>
 
-     <tbody>
-       <tr v-for="emp in filteredEmployees" :key="emp.id">
-        <td class="name-cell">{{ emp.nome }}</td>
-        <td class="code-cell">{{ emp.setor }}</td>
-        <td><span>{{ emp.turno }}</span></td>
-        <td><span :class="emp.status === 'Ativo' ? 'status-active' : 'status-inactive'">
-                  {{ emp.status }}</span>
-           </td>
-                     
-        <td class="actions-cell">
-         <div class="menu-wrapper">
-          <button class="dots" @click="toggleMenu(emp.id)">⋮</button>
+          <button
+            type="button"
+            class="btn btn-outline"
+            @click.prevent="refreshList"
+          >
+            <RefreshCcw class="icon" />
+            Atualizar
+          </button>
+        </div>
+      </div>
 
-        <div v-if="openMenuId === emp.id" class="dropdown">
-         <button @click="editEmployee(emp)">Editar</button>
-         <button class="danger" @click="deleteEmployee(emp.id)">Excluir</button>
-          </div>
-           </div>
-            </td>
-             </tr>
+      <div class="search-box">
+        <input
+          v-model="searchTerm"
+          placeholder="Buscar funcionário..."
+        />
+      </div>
 
-        <tr v-if="filteredEmployees.length === 0">
-        <td colspan="5" class="empty-state">Nenhum funcionário encontrado</td>
-         </tr>
-          </tbody>
-           </table>
-            </div>
-             </div>
-              </div>
+      <div class="table-box">
+        <div class="table-header-dark">
+          <h2>Funcionários</h2>
+        </div>
 
-     <div v-if="openDialog" class="modal-overlay">
+        <div class="table-wrapper">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Setor</th>
+                <th>Turno</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr
+                v-for="emp in filteredEmployees"
+                :key="emp.id"
+              >
+                <td class="name-cell">
+                  {{ emp.nome }}
+                </td>
+
+                <td class="code-cell">
+                  {{ emp.setor }}
+                </td>
+
+                <td>
+                  {{ emp.turno }}
+                </td>
+
+                <td>
+                  <span
+                    :class="
+                      emp.status === 'Ativo'
+                        ? 'status-active'
+                        : 'status-inactive'
+                    "
+                  >
+                    {{ emp.status }}
+                  </span>
+                </td>
+
+                <td class="actions-cell">
+                  <div class="menu-wrapper">
+                    <button
+                      type="button"
+                      class="dots"
+                      @click.prevent="toggleMenu(emp.id)"
+                    >
+                      ⋮
+                    </button>
+
+                    <div
+                      v-if="openMenuId === emp.id"
+                      class="dropdown"
+                    >
+                      <button
+                        type="button"
+                        @click.prevent="editEmployee(emp)"
+                      >
+                        Editar
+                      </button>
+
+                      <button
+                        type="button"
+                        class="danger"
+                        @click.prevent="deleteEmployee(emp.id)"
+                      >
+                        Excluir
+                      </button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr v-if="filteredEmployees.length === 0">
+                <td
+                  colspan="5"
+                  class="empty-state"
+                >
+                  Nenhum funcionário encontrado
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div
+      v-if="openDialog"
+      class="modal-overlay"
+    >
       <div class="modal">
-       <div class="modal-header"><h3>{{ editing ? 'Editar Funcionário' : 'Cadastrar Funcionário' }}</h3>
-        <button @click="closeDialog">✕</button>
-         </div>
+        <div class="modal-header">
+          <h3>
+            {{
+              editing
+                ? 'Editar Funcionário'
+                : 'Cadastrar Funcionário'
+            }}
+          </h3>
 
-     <div class="form">
-      <div class="grid">
-       <div><label>Nome</label>
-        <input v-model="form.nome" />
-          </div>
-
-      <div><label>Email</label>
-          <input v-model="form.email" />
-            </div>
-             </div>
-
-     <div class="grid">
-      <div><label>Setor</label>
-          <input v-model="form.setor" />
-            </div>
-
-      <div><label>Turno</label>
-       <select v-model="form.turno"><option>Manhã</option>
-                                     <option>Tarde</option>
-                                     <option>Noite</option>
-         </select>
-          </div>
-           </div>
-            </div>
-
-    <div class="modal-actions">
-     <button class="btn btn-outline" @click="closeDialog">Cancelar</button>
-     <button class="btn btn-primary" @click="saveEmployee">Salvar</button>
-      </div>
-       </div>
+          <button
+            type="button"
+            @click.prevent="closeDialog"
+          >
+            ✕
+          </button>
         </div>
+
+        <div class="form">
+          <div class="grid">
+            <div>
+              <label>Nome</label>
+              <input v-model="form.nome" />
+            </div>
+
+            <div>
+              <label>Setor</label>
+              <input v-model="form.setor" />
+            </div>
           </div>
+
+          <div class="grid">
+            <div>
+              <label>Turno</label>
+
+              <select v-model="form.turno">
+                <option>Manhã</option>
+                <option>Tarde</option>
+                <option>Noite</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Status</label>
+
+              <select v-model="form.status">
+                <option>Ativo</option>
+                <option>Inativo</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button
+            type="button"
+            class="btn btn-outline"
+            @click.prevent="closeDialog"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click.prevent="saveEmployee"
+          >
+            Salvar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { supabase } from '../composable/useSupabase'
 import header_2 from '../components/header_2.vue'
 import { UserPlus, RefreshCcw } from 'lucide-vue-next'
@@ -124,28 +224,46 @@ const editId = ref(null)
 
 const form = ref({
   nome: '',
-  email: '',
   setor: '',
   turno: '',
   status: 'Ativo'
 })
 
-onMounted(async () => {
+async function loadEmployees() {
   const { data, error } = await supabase
     .from('funcionario')
     .select('*')
+
   if (error) {
     console.error('Erro ao buscar funcionários', error)
     return
   }
-  employees.value = (data || []).map(f => ({
-    id: f.id_funcionario ?? f.Id_funcionario ?? f.id,
-    nome: f.nome_funcionario ?? f.Nome_funcionario ?? f.nome ?? '',
-    email: f.email_funcionario ?? f.Email_funcionario ?? f.email ?? '',
-    setor: f.setor ?? '',
-    turno: f.turno_funcionario ?? f.Turno_funcionario ?? f.turno ?? '',
-    status: 'Ativo'
+
+  employees.value = data.map(f => ({
+    id: f.id_funcionario,
+    nome: f.nome_funcionario,
+    setor: f.setor_funcionario,
+    turno: f.turno_funcionario,
+    status: f.status_funcionario
   }))
+}
+
+onMounted(() => {
+  loadEmployees()
+  document.addEventListener('click', closeMenuOnOutsideClick)
+})
+
+function closeMenuOnOutsideClick(event) {
+  const isMenuButton = event.target.closest('.dots')
+  const isDropdown = event.target.closest('.dropdown')
+
+  if (!isMenuButton && !isDropdown && openMenuId.value !== null) {
+    openMenuId.value = null
+  }
+}
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', closeMenuOnOutsideClick)
 })
 
 const filteredEmployees = computed(() => {
@@ -157,7 +275,14 @@ const filteredEmployees = computed(() => {
 
 function openCreate() {
   editing.value = false
-  form.value = { nome: '', email: '', setor: '', turno: '', status: 'Ativo' }
+
+  form.value = {
+    nome: '',
+    setor: '',
+    turno: '',
+    status: 'Ativo'
+  }
+
   openDialog.value = true
 }
 
@@ -165,93 +290,84 @@ function closeDialog() {
   openDialog.value = false
 }
 
-function saveEmployee() {
+async function saveEmployee() {
   if (editing.value) {
-    // update in Supabase
-    supabase.from('funcionario')
+    const { error } = await supabase
+      .from('funcionario')
       .update({
         nome_funcionario: form.value.nome,
-        email_funcionario: form.value.email,
-        turno_funcionario: form.value.turno
+        setor_funcionario: form.value.setor,
+        turno_funcionario: form.value.turno,
+        status_funcionario: form.value.status
       })
       .eq('id_funcionario', editId.value)
-      .select()
-      .then(({ data, error }) => {
-        if (error) {
-          console.error('Erro ao atualizar funcionário', error)
-          return
-        }
-        const f = data[0]
-        employees.value = employees.value.map(e =>
-          e.id === editId.value
-            ? {
-                id: editId.value,
-                nome: f.nome_funcionario ?? form.value.nome,
-                email: f.email_funcionario ?? form.value.email,
-                setor: form.value.setor,
-                turno: f.turno_funcionario ?? form.value.turno,
-                status: form.value.status
-              }
-            : e
-        )
-      })
+
+    if (error) {
+      console.error('Erro ao atualizar funcionário', error)
+      return
+    }
   } else {
-    // insert into Supabase
-    supabase.from('funcionario')
+    const { error } = await supabase
+      .from('funcionario')
       .insert([{
         nome_funcionario: form.value.nome,
-        email_funcionario: form.value.email,
-        turno_funcionario: form.value.turno
+        setor_funcionario: form.value.setor,
+        turno_funcionario: form.value.turno,
+        status_funcionario: form.value.status
       }])
-      .select()
-      .then(({ data, error }) => {
-        if (error) {
-          console.error('Erro ao inserir funcionário', error)
-          return
-        }
-        const f = data[0]
-        employees.value.push({
-          id: f.Id_funcionario,
-          nome: f.nome_funcionario,
-          email: f.email_funcionario || '',
-          setor: form.value.setor,
-          turno: f.turno_funcionario || '',
-          status: form.value.status
-        })
-      })
+
+    if (error) {
+      console.error('Erro ao inserir funcionário', error)
+      return
+    }
   }
+
+  await loadEmployees()
   closeDialog()
 }
 
 function editEmployee(emp) {
   editing.value = true
   editId.value = emp.id
-  form.value = { nome: emp.nome || '', email: emp.email || '', setor: emp.setor || '', turno: emp.turno || '', status: emp.status || 'Ativo' }
+
+  form.value = {
+    nome: emp.nome,
+    setor: emp.setor,
+    turno: emp.turno,
+    status: emp.status
+  }
+
   openDialog.value = true
   openMenuId.value = null
 }
 
-function deleteEmployee(id) {
-  // delete from Supabase then remove locally
-  supabase.from('funcionario').delete().eq('id_funcionario', id).then(({ error }) => {
-    if (error) {
-      console.error('Erro ao deletar funcionário', error)
-      return
-    }
-    employees.value = employees.value.filter(e => e.id !== id)
-    openMenuId.value = null
-  })
+async function deleteEmployee(id) {
+  const { error } = await supabase
+    .from('funcionario')
+    .delete()
+    .eq('id_funcionario', id)
+
+  if (error) {
+    console.error('Erro ao deletar funcionário', error)
+    return
+  }
+
+  employees.value = employees.value.filter(
+    emp => emp.id !== id
+  )
+
+  openMenuId.value = null
 }
 
 function toggleMenu(id) {
-  openMenuId.value = openMenuId.value === id ? null : id
+  openMenuId.value =
+    openMenuId.value === id ? null : id
 }
 
-function refreshList() {
-  employees.value = [...employees.value]
+async function refreshList() {
+  await loadEmployees()
 }
 </script>
-
 <style scoped>
 
 * {
@@ -276,27 +392,6 @@ function refreshList() {
   margin-bottom: 10px;
 }
 
-.hamburger {
-  width: 45px;
-  height: 45px;
-  background: white;
-  border: 1px solid #dbe2ea;
-  border-radius: 12px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 5px;
-  padding: 8px;
-}
-
-.hamburger span {
-  width: 100%;
-  height: 3px;
-  background: #0f172a;
-  border-radius: 10px;
-}
-
 .header-title {
   margin-bottom: 30px;
 }
@@ -314,32 +409,6 @@ function refreshList() {
   margin-bottom: 25px;
 }
 
-.search-box {
-  width: 350px;
-   margin-bottom: 25px;
-}
-
-.search-box input {
-  width: 113%;
-  height: 52px;
-  padding: 0 16px;
-  border-radius: 14px;
-  border: 1px solid #dbe2ea;
-  background: white;
-  font-size: 15px;
-  font-family: 'Inter', sans-serif;
-  font-weight: 400;
-  outline: none;
-  color: #000000;
-}
-
-.search-box input::placeholder {
-  color: #000000cd;
-} 
-
-.search-box input:focus {
-  border-color: #0f172a;
-}
 .buttons {
   display: flex;
   gap: 12px;
@@ -354,7 +423,7 @@ function refreshList() {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-   gap: 10px;
+  gap: 10px;
   padding-left: 22px;
   font-size: 17px;
   font-weight: 500;
@@ -363,9 +432,9 @@ function refreshList() {
 }
 
 .icon {
- width: 24px;
- height: 24px;
- margin-right: 6px;
+  width: 24px;
+  height: 24px;
+  margin-right: 6px;
 }
 
 .btn-primary {
@@ -387,16 +456,45 @@ function refreshList() {
   background: #f8fafc;
 }
 
+.search-box {
+  width: 350px;
+  margin-bottom: 25px;
+}
+
+.search-box input {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  border-radius: 14px;
+  border: 1px solid #dbe2ea;
+  background: white;
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  outline: none;
+  color: #000000;
+}
+
+.search-box input::placeholder {
+  color: #000000cd;
+}
+
+.search-box input:focus {
+  border-color: #0f172a;
+}
+
 .table-box {
   background: white;
   border-radius: 22px;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 4px 20px rgba(0,0,0,0.04);
 }
 
 .table-header-dark {
   background: #0f172a;
   padding: 22px;
+  border-top-left-radius: 22px;
+  border-top-right-radius: 22px;
 }
 
 .table-header-dark h2 {
@@ -406,12 +504,13 @@ function refreshList() {
 }
 
 .table-wrapper {
-  overflow-x: auto;
+  overflow: visible;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
+  overflow: visible;
 }
 
 .table th {
@@ -434,7 +533,6 @@ function refreshList() {
 
 .name-cell {
   font-size: 20px;
-  font-family: 'Inter', sans-serif;
   font-weight: 400;
   color: #0f172a;
 }
@@ -461,22 +559,13 @@ function refreshList() {
   font-weight: 600;
 }
 
-.success-text {
-  color: #10b981;
-  font-weight: 600;
-}
-
-.danger-text {
-  color: #ef4444;
-  font-weight: 600;
-}
-
 .actions-cell {
   position: relative;
+  overflow: visible;
 }
 
 .menu-wrapper {
-  position: relative;
+  position: static;
 }
 
 .dots {
@@ -489,14 +578,13 @@ function refreshList() {
 
 .dropdown {
   position: absolute;
-  right: 0;
-  top: 32px;
+  top: 10px;
+  right: 80px;
   background: white;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   min-width: 140px;
-  overflow: hidden;
-  z-index: 20;
+  z-index: 99999;
   box-shadow: 0 6px 20px rgba(0,0,0,0.08);
 }
 
