@@ -14,75 +14,58 @@
 
       <div class="header-actions">
         <button
+          v-if="session"
           type="button"
           class="auth-button"
-          @click="handleAuthAction"
-          :title="session ? 'Sair do sistema' : 'Entrar no sistema'"
+          title="Meu Perfil"
+          @click="goToPerfil"
         >
-          <User
-            v-if="session"
-            class="auth-icon"
-          />
+          <User class="auth-icon" />
+        </button>
 
-          <LogIn
-            v-else
-            class="auth-icon"
-          />
+        <button
+          v-else
+          type="button"
+          class="auth-button"
+          title="Entrar"
+          @click="goToLogin"
+        >
+          <LogIn class="auth-icon" />
+        </button>
+
+        <button
+          v-if="session"
+          type="button"
+          class="auth-button"
+          title="Sair"
+          @click="logout"
+        >
+          <LogOut class="auth-icon" />
         </button>
       </div>
     </header>
 
-    <aside
-      class="sidebar"
-      :class="{ open: menuOpen }"
-    >
-      <p @click="goToRelatorio">
-        Relatórios
-      </p>
-
-      <p @click="goTocadastroFuncionario">
-        Cadastro de Funcionários
-      </p>
-
-      <p @click="goTocadastroEPI">
-        Cadastro de EPIs
-      </p>
-
-      <p @click="goTocadastroEntrega">
-        Cadastro de Entregas
-      </p>
+    <aside class="sidebar" :class="{ open: menuOpen }">
+      <p @click="goToRelatorio">Relatórios</p>
+      <p @click="goTocadastroFuncionario">Cadastro de Funcionários</p>
+      <p @click="goTocadastroEPI">Cadastro de EPIs</p>
+      <p @click="goTocadastroEntrega">Cadastro de Entregas</p>
     </aside>
 
-    <div
-      v-if="menuOpen"
-      class="overlay"
-      @click="closeMenu"
-    ></div>
+    <div v-if="menuOpen" class="overlay" @click="closeMenu"></div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { User, LogIn, LogOut } from 'lucide-vue-next'
 import { useSupabase } from '../composable/useSupabase'
-import { User, LogIn } from 'lucide-vue-next'
 
 const router = useRouter()
+
 const menuOpen = ref(false)
-
 const { session, supabase } = useSupabase()
-
-async function handleAuthAction() {
-  if (session.value) {
-    await supabase.auth.signOut()
-    closeMenu()
-    router.push('/login')
-    return
-  }
-
-  closeMenu()
-  router.push('/login')
-}
 
 function toggleMenu() {
   menuOpen.value = !menuOpen.value
@@ -90,6 +73,22 @@ function toggleMenu() {
 
 function closeMenu() {
   menuOpen.value = false
+}
+
+function goToPerfil() {
+  closeMenu()
+  router.push('/perfil')
+}
+
+function goToLogin() {
+  closeMenu()
+  router.push('/login')
+}
+
+async function logout() {
+  await supabase.auth.signOut()
+  closeMenu()
+  router.push('/login')
 }
 
 function goToRelatorio() {
@@ -114,7 +113,6 @@ function goTocadastroEntrega() {
 </script>
 
 <style scoped>
-
 * {
   margin: 0;
   padding: 0;
@@ -172,7 +170,6 @@ function goTocadastroEntrega() {
   padding: 20px;
   transition: 0.3s;
   z-index: 1000;
-  font-family: 'Inter', sans-serif;
 }
 
 .sidebar.open {
@@ -184,6 +181,7 @@ function goTocadastroEntrega() {
   cursor: pointer;
   font-size: 20px;
   font-weight: 400;
+  font-family: 'Inter', sans-serif;
 }
 
 .overlay {
@@ -192,13 +190,14 @@ function goTocadastroEntrega() {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   z-index: 999;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
+  gap: 12px;
 }
 
 .auth-button {
@@ -207,23 +206,21 @@ function goTocadastroEntrega() {
   justify-content: center;
   width: 44px;
   height: 44px;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 999px;
   color: #ffffff;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.auth-button:hover {
+  background: rgba(255, 255, 255, 0.18);
 }
 
 .auth-icon {
   width: 18px;
   height: 18px;
+  color: #ffffff;
 }
-
-@media (max-width: 600px) {
-  .auth-button {
-    width: 40px;
-    height: 40px;
-  }
-}
-
 </style>

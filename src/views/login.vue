@@ -71,13 +71,6 @@
           <p v-if="errorMessage" class="error">
             {{ errorMessage }}
           </p>
-
-          <div class="divider"><span>ou</span></div>
-
-          <p class="register">
-            Não tem uma conta?
-            <router-link to="/cadastro">Cadastre-se</router-link>
-          </p>
         </div>
       </section>
 

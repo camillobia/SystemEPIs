@@ -1,28 +1,28 @@
 <template>
   <header_2 />
-     <div class="page">
-      <div class="container">
-       <div class="header-title">
+  <div class="page">
+    <div class="container">
+      <div class="header-title">
         <h1 class="title">Relatórios de EPIs</h1>
-          </div>
+      </div>
 
       <div class="cards">
-       <div class="card">
-        <div class="card-top">
-        <span class="card-title">EPIs Vencidos</span>
-        <span class="icon-box danger">⚠</span>
-         </div>
+        <div class="card">
+          <div class="card-top">
+            <span class="card-title">EPIs Vencidos</span>
+            <span class="icon-box danger">⚠</span>
+          </div>
 
           <div class="card-value danger-text">
             {{ expiredCount }}
-             </div>
-              </div>
+          </div>
+        </div>
 
-      <div class="card">
-       <div class="card-top">
-        <span class="card-title">Próximos ao Vencimento</span>
+        <div class="card">
+          <div class="card-top">
+            <span class="card-title">Próximos ao Vencimento</span>
 
-        <span class="icon-box warning">◔</span>
+            <span class="icon-box warning">◔</span>
           </div>
 
           <div class="card-value warning-text">
@@ -39,41 +39,34 @@
           <div class="card-value primary-text">
             {{ totalStock }}
           </div>
-           </div>
-            </div>
+        </div>
+      </div>
 
       <div class="actions">
-       <div class="search-box">
-        <input
-          v-model="search"
-          type="text"
-          placeholder="Buscar por nome ou código do EPI..."/>
-           </div>
+        <div class="search-box">
+          <input v-model="search" type="text" placeholder="Buscar por nome ou código do EPI..." />
+        </div>
 
-        <select
-          v-model="dateFilter"
-          class="select">
+        <select v-model="dateFilter" class="select">
           <option value="7">Próximos 7 dias</option>
           <option value="30">Próximos 30 dias</option>
           <option value="90">Próximos 90 dias</option>
           <option value="365">Próximo ano</option>
-           </select>
+        </select>
 
-        <button
-          class="btn btn-outline"
-          @click="loadInventory">
+        <button class="btn btn-outline" @click="loadInventory">
           Exportar
-         </button>
-          </div>
+        </button>
+      </div>
 
       <div class="table-box">
-       <div class="table-header-dark">
-       <h2>Listagem de Estoque</h2>
+        <div class="table-header-dark">
+          <h2>Listagem de Estoque</h2>
         </div>
 
         <div class="table-wrapper">
-         <table class="table">
-          <thead>
+          <table class="table">
+            <thead>
               <tr>
                 <th>Nome</th>
                 <th>Código</th>
@@ -84,10 +77,7 @@
             </thead>
 
             <tbody>
-             <tr
-                v-for="item in filteredInventory"
-                :key="item.id"
-              >
+              <tr v-for="item in filteredInventory" :key="item.id">
                 <td class="name-cell">
                   {{ item.nome }}
                 </td>
@@ -108,24 +98,15 @@
 
                 <td>
 
-                  <span
-                    v-if="item.status === 'Vencido'"
-                    class="status-danger"
-                  >
+                  <span v-if="item.status === 'Vencido'" class="status-danger">
                     Vencido
                   </span>
 
-                  <span
-                    v-else-if="item.status === 'Próximo ao vencimento'"
-                    class="status-warning"
-                  >
+                  <span v-else-if="item.status === 'Próximo ao vencimento'" class="status-warning">
                     Próximo
                   </span>
 
-                  <span
-                    v-else
-                    class="status-active"
-                  >
+                  <span v-else class="status-active">
                     Em dia
                   </span>
 
@@ -133,10 +114,7 @@
               </tr>
 
               <tr v-if="filteredInventory.length === 0">
-                <td
-                  colspan="5"
-                  class="empty-state"
-                >
+                <td colspan="5" class="empty-state">
                   Nenhum EPI encontrado
                 </td>
               </tr>
@@ -325,7 +303,6 @@ function addDays(date, days) {
 </script>
 
 <style scoped>
-
 * {
   box-sizing: border-box;
   margin: 0;
