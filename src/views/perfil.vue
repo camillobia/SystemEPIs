@@ -274,45 +274,46 @@ onMounted(loadUser)
 .app {
     min-height: 100vh;
     background: #eef2f7;
-    font-family: 'Poppins', sans-serif;
-    padding: 18px;
+    font-family: 'Inter', sans-serif;
+    padding: 16px;
 }
 
 .container {
     width: 100%;
-    max-width: 760px;
+    max-width: 620px;
     margin: 0 auto;
 }
 
 .profile-card {
     background: white;
-    border-radius: 20px;
+    border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 6px 20px rgba(15,23,42,0.08);
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
 }
 
 .profile-banner {
     height: 105px;
-    background: linear-gradient(90deg, #0b223d, #123962);
+    background: #082241;
     position: relative;
 }
 
+
 .profile-banner h1 {
     position: absolute;
-    left: 30px;
-    bottom: 24px;
+    left: 28px;
+    bottom: 30px;
     color: white;
-    font-size: 30px;
+    font-size: 26px;
     font-weight: 700;
 }
 
 .profile-avatar-wrapper {
-    width: 100px;
-    height: 100px;
+    width: 88px;
+    height: 88px;
     border-radius: 50%;
     background: white;
     position: relative;
-    margin: -50px auto 14px;
+    margin: -44px auto 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -320,8 +321,8 @@ onMounted(loadUser)
 
 .profile-image,
 .profile-placeholder {
-    width: 92px;
-    height: 92px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     overflow: hidden;
     background: #e2e8f0;
@@ -339,18 +340,25 @@ onMounted(loadUser)
 
 .upload-button {
     position: absolute;
-    right: 4px;
-    bottom: 4px;
-    width: 30px;
-    height: 30px;
+    right: 2px;
+    bottom: 2px;
+
+    width: 28px;
+    height: 28px;
+
     border-radius: 50%;
+
     background: #0b223d;
     color: white;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     cursor: pointer;
-    border: 3px solid white;
+
+    border: 2px solid white;
+
     transition: .2s;
 }
 
@@ -360,149 +368,147 @@ onMounted(loadUser)
 
 .profile-info {
     text-align: center;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
 }
 
 .profile-info h2 {
-    font-size: 18px;
-    font-weight: 700;
-    color: #0b223d;
+    font-size: 17px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    color: #0f2744;
 }
 
 .divider {
+    width: calc(100% - 64px);
     height: 1px;
-    background: #dbe3ee;
-    margin: 0 28px 18px;
-}
 
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 14px;
-    padding: 0 28px;
-}
+    background: #d9d9d9;
 
-.form-group {
-    margin-bottom: 2px;
+    margin: 0 auto 16px;
 }
 
 .full-width {
-    padding: 0 28px;
-    margin-bottom: 18px;
+    padding: 0 32px;
+    margin-bottom: 12px;
+}
+
+.form-grid {
+    padding: 0 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .form-group label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    display: block;
+
     margin-bottom: 8px;
+
     font-size: 14px;
-    font-weight: 700;
-    color: #0b223d;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+
+    color: #0f2744;
 }
 
 .input-wrapper {
-    height: 48px;
-    border: 1px solid #dbe3ee;
-    border-radius: 12px;
-    padding: 0 16px;
+    width: 100%;
+    height: 42px;
+
+    border-radius: 10px;
+
+    background: #dcdcdc;
+
+    padding: 0 14px;
+
     display: flex;
     align-items: center;
     gap: 10px;
-    transition: .2s;
-    box-shadow: none;
-    background: white;
-}
-
-.input-wrapper:focus-within {
-    border-color: #123962;
-    box-shadow: none;
 }
 
 .icon {
-    color: #415a77;
+    color: #757575;
     flex-shrink: 0;
 }
 
 .input-wrapper input {
     flex: 1;
+
     border: none;
     outline: none;
-    background: transparent;
-    font-size: 15px;
-    color: #0b223d;
-    box-shadow: none;
-}
 
-.input-wrapper input:focus {
-    outline: none;
-    box-shadow: none;
+    background: transparent;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    color: #0f2744;
 }
 
 .input-wrapper input::placeholder {
-    color: #94a3b8;
+    color: #6e6e6e;
 }
 
 .toggle-button {
     border: none;
     background: transparent;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    color: #415a77;
-}
 
-.toggle-button:hover {
-    color: #0b223d;
+    cursor: pointer;
+
+    color: #757575;
 }
 
 .actions-footer {
     display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    padding: 22px 28px 28px;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 10px;
+    padding: 20px 32px 30px;
 }
 
 .back-button,
 .save-button {
-    width: 150px;
-    height: 48px;
+    width: 280px;
+    height: 46px;
+
     border: none;
     border-radius: 12px;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     text-decoration: none;
-    font-size: 15px;
-    font-weight: 700;
+
+    font-size: 16px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+
     cursor: pointer;
+
     transition: .2s;
 }
 
 .back-button {
-    background: linear-gradient(90deg, #1d3f72, #17335c);
+    background: #082241;
     color: white;
-}
-
-.back-button:hover {
-    opacity: .92;
 }
 
 .save-button {
-    background: linear-gradient(90deg, #059669, #16a34a);
+    background: #25a81c;
     color: white;
 }
 
+.back-button:hover,
 .save-button:hover {
     opacity: .92;
 }
 
 @media (max-width: 768px) {
-
-    .app {
-        padding: 14px;
-    }
 
     .container {
         max-width: 100%;
@@ -513,37 +519,21 @@ onMounted(loadUser)
     }
 
     .profile-banner h1 {
-        font-size: 24px;
+        font-size: 22px;
         left: 22px;
-        bottom: 20px;
+        bottom: 24px;
     }
 
-    .profile-avatar-wrapper {
-        width: 90px;
-        height: 90px;
-        margin-top: -45px;
-    }
-
-    .profile-image,
-    .profile-placeholder {
-        width: 82px;
-        height: 82px;
-    }
-
-    .form-grid,
-    .full-width {
+    .full-width,
+    .form-grid {
         padding-left: 20px;
         padding-right: 20px;
-    }
-
-    .divider {
-        margin-left: 20px;
-        margin-right: 20px;
     }
 
     .actions-footer {
         flex-direction: column;
         padding: 20px;
+        
     }
 
     .back-button,
